@@ -1,0 +1,15 @@
+####################################################
+
+--To Do List--
+
+####################################################
+
+	1. Update location classes for new definition
+	
+	2. Add movement
+	
+	3. Check/Add feature to check if player has visited a location previously
+	
+	4. Allow player to take items
+	
+	5. Allow player to drop items and reflect that in location description

@@ -98,18 +98,18 @@ class player:
 						print("\nVery well...")
 						return
 					elif finished.lower() == "n":
-						self.pickAttributes()
+						return self.pickAttributes()
 					else:
 						print("I didn't catch that.")
 		if total != 0:
 			print("\nYou failed to use all of your points. Try again.")
-			self.pickAttributes()
+			return self.pickAttributes()
 	def printLocation(self):
 		self.location.printDescription()
 	def printInv(self):
 		print ("\nYour pockets contain:\n")
 		for i in self.inv:
-			print ("\t",i.name)
+			print ("\t-",i.name)
 		print("")
 		
 		#if self.location.visited == False:
