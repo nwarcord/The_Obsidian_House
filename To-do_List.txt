@@ -13,3 +13,9 @@
 	-- Allow player to take items
 	
 	-- Allow player to drop items and reflect that in location description
+	
+	--Instantiate all rooms at runtime
+	
+	--Make a lookup table in the main file
+	
+		--Lookup would reference the object name

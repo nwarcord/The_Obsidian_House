@@ -116,9 +116,10 @@ class player:
 		temp = ["north", "south", "east", "west", "up", "down"]
 		for i in temp:
 			if x == i[0] or x == i:
-				temp = getattr(self.location, "connections")
-				temp = temp[i]
-				self.location = ast.literal_eval(temp)
+				player.location = player.location.connections[i]
+				#temp = getattr(self.location, "connections")
+				#temp = temp[i]
+				#self.location = ast.literal_eval(temp)
 				#self.location = self.location.connections[i]
 				#locale = self.location.connections[i]
 				#self.location = locals()[locale]()
