@@ -1,4 +1,5 @@
 from bitarray import bitarray
+import ast
 
 ####################################################
 ##				  --Classes--					  ##
@@ -111,7 +112,17 @@ class player:
 		for i in self.inv:
 			print ("\t-",i.name)
 		print("")
-		
+	def playerMove(self, x):
+		temp = ["north", "south", "east", "west", "up", "down"]
+		for i in temp:
+			if x == i[0] or x == i:
+				temp = getattr(self.location, "connections")
+				temp = temp[i]
+				self.location = ast.literal_eval(temp)
+				#self.location = self.location.connections[i]
+				#locale = self.location.connections[i]
+				#self.location = locals()[locale]()
+				return
 		#if self.location.visited == False:
 			#self.location.printDescription()
 			#self.location.visited = True
@@ -120,7 +131,7 @@ class player:
 
 class location:
 	
-	visited = False
+	#visited = False
 	
 	def __init__(self, description, interactions, connections, name):
 		self.description = description
@@ -168,7 +179,11 @@ class npc:
 ##				  --Locations--				  	  ##
 ####################################################
 
+#tempdict = {"doorOpen" : self.doorOpen}
+
 class frontTavern(location):
+
+	visited = False
 
 	def __init__(self,
 			description = """\nSomething is here.
@@ -179,9 +194,9 @@ class frontTavern(location):
 				"door" : "Door description",
 				"river" : "River description"},
 			connections = {
-				"north" : "shack",
-				"south" : "sideAlley",
-				"east" : "player.location.doorOpen()"},
+				"north" : "shack()",
+				"south" : "sideAlley()",
+				"east" : "doorOpen()"},
 				name = "Front Tavern"):
 		location.__init__(self,description,interactions,connections,name)
 		
@@ -189,7 +204,7 @@ class frontTavern(location):
 		print("The door is shut.")
 		cmmd = input(">>> ",)
 		if cmmd.lower() == "open door":
-			self.connections["east"] = "tavernEntryway"
+			self.connections["east"] = "tavernEntryway()"
 			interactions["door"] = "Warm light and soft music spill from the doorway."
 			print ("You turn the cold, silver handle until there is a satisfying click. The door opens smooth and silent.")
 			self.description += "\nThe door to the building is open."

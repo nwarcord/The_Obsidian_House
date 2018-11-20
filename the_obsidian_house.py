@@ -2,6 +2,7 @@ import re
 import regex
 from bitarray import bitarray
 from class_the_obsidian_house import *
+import ast
 
 cmdExit = re.compile(("^(Quit|Exit){1}$"),re.I)
 #cmdInv = re.compile("(Search|Examine)? Inventory",re.I)
@@ -9,6 +10,7 @@ cmdInv = re.compile("^(Inventory){1}$",re.I)
 cmdScan = re.compile(("^(Scan|Look){1}$"),re.I)
 cmdHelp = re.compile(("^(Help){1}$"),re.I)
 cmdMove = re.compile(r"^(n|north|s|south|e|east|w|west|up|down){1}$",re.I)
+#cmdOpen = re.compile(r"^(?<=Open\s)(\w+)$",re.I)
 
 def user_input(cmmd):
 	cmdExamine = regex.search(r"(?<=Examine\s)((\w+)(?:\s)*)+",cmmd,regex.I)
@@ -19,11 +21,13 @@ def user_input(cmmd):
 	elif cmdExamine:
 		temp = cmdExamine.captures()
 		describe(temp)
+	#elif cmdOpen:
+		#return
 	elif cmdMove.search(cmmd):
-		playerMove(cmmd)
-		boo = player.location["visited"]
+		player.playerMove(cmmd)
+		boo = player.location.visited
 		printLocation(boo)
-		player.location["visited"] = True
+		player.location.visited = True
 	elif cmdScan.search(cmmd):
 		player.printLocation()
 		#printLocation(False)
@@ -111,7 +115,7 @@ def gameExit():
 
 player = player(frontTavern(),strangeToken())
 welcomeMsg()
-player.pickAttributes()
+#player.pickAttributes()
 #player.printAttributes()
 print("-"*52)
 print(player.location.description)
