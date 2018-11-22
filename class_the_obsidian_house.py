@@ -185,13 +185,24 @@ class npc:
 class frontTavern(location):
 
 	def __init__(self,
-			description = """\nSomething is here.\
-			\nAnd it is a good description.\n""",
+			description = """\nThe air at dusk is humid on the edge of the -blank- River.\
+			\nYou stand outside of a wooden building, the river at your back.\
+			\nThe gray paint is chipping, but the structure appears sturdy.\
+			\nThere is a sign above the door.\n""",
 			interactions = {
-				"sign" : "Sign description",
-				"ground" : "Ground description",
-				"door" : "Door description",
-				"river" : "River description"},
+				"sign" : """\nBlackened wood swings above the door.\
+				\nThe markings on it archaic and rough.\
+				\nIt reads:\
+				\n\n	The Obsidian House\
+				\n\n	of Vereth & Time
+				""",
+				"ground" : """\nMoist from a recent rain.\
+				\nYour feet sink a full inch in mud.
+				""",
+				"door" : """\nFlat and smooth, it feels cold like stone.
+				""",
+				"river" : """\nIt is dark and calm.
+				"""},
 			connections = {
 				"north" : "shack",
 				"south" : "side alley",
@@ -207,13 +218,12 @@ class frontTavern(location):
 			\nThe door opens smooth and silent.
 			""")
 			self.description += "The door to the building is open.\n"
-			#return True
 			return
 		elif thing == "door":
-			print ("The door is already open.")
+			print ("\nThe door is already open.\n")
 			return
 		else:
-			print ("There is no {} to open here.".format(thing))
+			print ("\nThere is no {} here to open.\n".format(thing))
 			return
 
 class northTavern(location):

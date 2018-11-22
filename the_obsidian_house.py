@@ -18,7 +18,15 @@ def user_input(cmmd):
 		player.printInv()
 	elif cmdExamine:
 		temp = cmdExamine.captures()
-		describe(temp)
+		temp = "".join(temp)
+		if temp in player.location.interactions:
+			print(player.location.interactions[temp])
+			return
+		for i in player.location.interactions:
+			if i in temp:
+				print(player.location.interactions[i])
+				return
+		print("You can't do that.")
 	elif cmdOpen.match(cmmd):
 		x = cmdOpen.match(cmmd)
 		player.location.openObject(x.group(1))
