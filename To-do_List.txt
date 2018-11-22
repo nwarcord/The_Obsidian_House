@@ -8,9 +8,13 @@
 	
 	-- [DONE] Add movement
 	
-	-- Location events (door opening, combat scenario, etc.)
+	-- (partial) Location events (door opening, combat scenario, etc.)
 	
-	-- Check/Add feature to check if player has visited a location previously
+	-- [DONE] Check/Add feature to check if player has visited a location previously
+	
+	-- Add item functionality
+	
+		--Function to check if item in room or player inventory
 	
 	-- Allow player to take items
 	

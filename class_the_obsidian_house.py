@@ -1,5 +1,4 @@
 from bitarray import bitarray
-import ast
 
 ####################################################
 ##				  --Classes--					  ##
@@ -105,8 +104,11 @@ class player:
 		if total != 0:
 			print("\nYou failed to use all of your points. Try again.")
 			return self.pickAttributes()
-	def printLocation(self):
-		self.location.printDescription()
+	def printLocation(self, visit):
+		if visit:
+			print("\n--{}--\n".format(self.location.name))
+		else:
+			self.location.printDescription()
 	def printInv(self):
 		print ("\nYour pockets contain:\n")
 		for i in self.inv:
@@ -142,7 +144,7 @@ class location:
 	def event_changes(self):
 		pass
 	def printDescription(self):
-		print("\n"+"--"+self.name+"--")
+		print("\n"+"--"+self.name+"--"+"\n")
 		print (self.description)
 	def printInteractions(self, thing):
 		if i in interactions:
@@ -183,8 +185,8 @@ class npc:
 class frontTavern(location):
 
 	def __init__(self,
-			description = """\nSomething is here.
-			""",
+			description = """\nSomething is here.\
+			\nAnd it is a good description.\n""",
 			interactions = {
 				"sign" : "Sign description",
 				"ground" : "Ground description",
@@ -193,21 +195,26 @@ class frontTavern(location):
 			connections = {
 				"north" : "shack",
 				"south" : "side alley",
-				"east" : "The door is shut."},
+				"east" : "\nThe door is shut.\n"},
 			name = "Front Tavern"):
 		location.__init__(self,description,interactions,connections,name)
 		
-	def doorOpen(self):
-		print("The door is shut.")
-		cmmd = input(">>> ",)
-		if cmmd.lower() == "open door":
+	def openObject(self, thing):
+		if thing == "door" and self.connections["east"] != "tavern entryway":
 			self.connections["east"] = "tavern entryway"
-			self.interactions["door"] = "Warm light and soft music spill from the doorway."
-			print ("You turn the cold, silver handle until there is a satisfying click. The door opens smooth and silent.")
-			self.description += "\nThe door to the building is open."
-			return True
+			self.interactions["door"] = "\nWarm light and soft music spill from the doorway.\n"
+			print ("""\nYou turn the cold, silver handle until there is a satisfying click.\
+			\nThe door opens smooth and silent.
+			""")
+			self.description += "The door to the building is open.\n"
+			#return True
+			return
+		elif thing == "door":
+			print ("The door is already open.")
+			return
 		else:
-			return False
+			print ("There is no {} to open here.".format(thing))
+			return
 
 class northTavern(location):
 	def __init__(self,

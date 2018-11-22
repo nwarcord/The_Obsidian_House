@@ -4,12 +4,11 @@ from bitarray import bitarray
 from class_the_obsidian_house import *
 
 cmdExit = re.compile(("^(Quit|Exit){1}$"),re.I)
-#cmdInv = re.compile("(Search|Examine)? Inventory",re.I)
 cmdInv = re.compile("^(Inventory){1}$",re.I)
 cmdScan = re.compile(("^(Scan|Look){1}$"),re.I)
 cmdHelp = re.compile(("^(Help){1}$"),re.I)
 cmdMove = re.compile(r"^(n|north|s|south|e|east|w|west|up|down){1}$",re.I)
-#cmdOpen = re.compile(r"^(?<=Open\s)(\w+)$",re.I)
+cmdOpen = re.compile(("^Open\s(\w+)$"),re.I)
 
 def user_input(cmmd):
 	cmdExamine = regex.search(r"(?<=Examine\s)((\w+)(?:\s)*)+",cmmd,regex.I)
@@ -20,17 +19,19 @@ def user_input(cmmd):
 	elif cmdExamine:
 		temp = cmdExamine.captures()
 		describe(temp)
-	#elif cmdOpen:
-		#return
+	elif cmdOpen.match(cmmd):
+		x = cmdOpen.match(cmmd)
+		player.location.openObject(x.group(1))
 	elif cmdMove.search(cmmd):
+		failed = str(player.location)
 		player.playerMove(cmmd,lookupTable)
-		#boo = player.location.visited
-		#printLocation(boo)
-		#player.location.visited = True
+		if str(player.location) == failed:
+			return
+		visit = player.location.visited
+		player.printLocation(visit)
+		player.location.visited = True
 	elif cmdScan.search(cmmd):
-		player.printLocation()
-		#printLocation(False)
-		#print(player.location["description"])
+		player.printLocation(False)
 	elif cmdHelp.search(cmmd):
 		printCommands()
 	elif cmmd == "stop":
@@ -41,7 +42,7 @@ def user_input(cmmd):
 
 def printCommands():
 	print("""\n[Quit or Exit] = Close the game\
-	\n\n[Search or Examine] Inventory = Print the contents of your inventory\
+	\n\nInventory = Print the contents of your inventory\
 	\n\n[Scan or Look] = Print the description of your surroundings.\
 	\n\nNote: Commands are not case-sensitive.
 	\n""")
@@ -149,5 +150,6 @@ welcomeMsg()
 #player.printAttributes()
 print("-"*52)
 print(player.location.description)
+player.location.visited = True
 while True:
 	user_input(input(">>> ",))
