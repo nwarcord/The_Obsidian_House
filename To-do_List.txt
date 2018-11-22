@@ -25,3 +25,5 @@
 	--[DONE] Make a lookup table in the main file
 	
 		--[DONE] Lookup would reference the object name
+		
+	-- Mention directions in the location descriptions

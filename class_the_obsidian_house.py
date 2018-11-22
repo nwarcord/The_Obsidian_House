@@ -270,7 +270,14 @@ class shack(location):
 		location.__init__(self, description, interactions, connections, name)
 
 class burnedStorehouse(location):
-	pass
+	def __init__(self,
+			description = "Something here.",
+			interactions = {"stuff" : "and info"},
+			connections = {
+				"north" : "north tavern",
+				"south" : "side alley"},
+			name = "Burned Storehouse"):
+		location.__init__(self, description,interactions,connections,name)
 	
 class tavernEntryway(location):
 	def __init__(self,
