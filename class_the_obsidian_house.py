@@ -112,27 +112,27 @@ class player:
 		for i in self.inv:
 			print ("\t-",i.name)
 		print("")
-	def playerMove(self, x):
+	def playerMove(self, x, table):
 		temp = ["north", "south", "east", "west", "up", "down"]
 		for i in temp:
 			if x == i[0] or x == i:
-				player.location = player.location.connections[i]
-				#temp = getattr(self.location, "connections")
-				#temp = temp[i]
-				#self.location = ast.literal_eval(temp)
-				#self.location = self.location.connections[i]
-				#locale = self.location.connections[i]
-				#self.location = locals()[locale]()
-				return
-		#if self.location.visited == False:
-			#self.location.printDescription()
-			#self.location.visited = True
-		#else:
-			#print("\n"+"--"+self.location.name+"--")
+				if i in self.location.connections:
+					if self.location.connections[i] in table:
+						move = self.location.connections[i]
+						self.location = table[move]
+						return
+					else:
+						print(self.location.connections[i])
+						return
+				else:
+					print("You can't go that way!")
+					return
+		print ("Input error")
+		return
 
 class location:
 	
-	#visited = False
+	visited = False
 	
 	def __init__(self, description, interactions, connections, name):
 		self.description = description
@@ -180,11 +180,7 @@ class npc:
 ##				  --Locations--				  	  ##
 ####################################################
 
-#tempdict = {"doorOpen" : self.doorOpen}
-
 class frontTavern(location):
-
-	visited = False
 
 	def __init__(self,
 			description = """\nSomething is here.
@@ -195,29 +191,30 @@ class frontTavern(location):
 				"door" : "Door description",
 				"river" : "River description"},
 			connections = {
-				"north" : "shack()",
-				"south" : "sideAlley()",
-				"east" : "doorOpen()"},
-				name = "Front Tavern"):
+				"north" : "shack",
+				"south" : "side alley",
+				"east" : "The door is shut."},
+			name = "Front Tavern"):
 		location.__init__(self,description,interactions,connections,name)
 		
 	def doorOpen(self):
 		print("The door is shut.")
 		cmmd = input(">>> ",)
 		if cmmd.lower() == "open door":
-			self.connections["east"] = "tavernEntryway()"
-			interactions["door"] = "Warm light and soft music spill from the doorway."
+			self.connections["east"] = "tavern entryway"
+			self.interactions["door"] = "Warm light and soft music spill from the doorway."
 			print ("You turn the cold, silver handle until there is a satisfying click. The door opens smooth and silent.")
 			self.description += "\nThe door to the building is open."
+			return True
 		else:
-			return cmmd
+			return False
 
 class northTavern(location):
 	def __init__(self,
 			description = """\nAnother description here.
 			""",
 			interactions = ["ground", "window", "trap door"],
-			connections = {"west" : "shack", "east": "burnedStorehouse"},
+			connections = {"west" : "shack", "east": "burned storehouse"},
 			name = "North Tavern"):
 		location.__init__(self, description, interactions, connections, name)
 
@@ -235,7 +232,7 @@ class sideAlley(location):
 			description = """Side alley description.
 			""",
 			interactions = ["ground", "papers", "garbage"],
-			connections = {"east" : "burnedStorehouse", "west" : "frontTavern"},
+			connections = {"east" : "burned storehouse", "west" : "front tavern"},
 			name = "Side Alley"):
 		location.__init__(self, description, interactions, connections, name)
 	
@@ -251,7 +248,7 @@ class shack(location):
 			description = """Shack description.
 			""",
 			interactions = ["book", "strange metal", "figment"],
-			connections = {"east" : "northTavern", "south" : "frontTavern"},
+			connections = {"east" : "north tavern", "south" : "front tavern"},
 			name = "Shack"):
 		location.__init__(self, description, interactions, connections, name)
 
@@ -263,7 +260,7 @@ class tavernEntryway(location):
 			description = """Entryway description here.
 			""",
 			interactions = ["hostess", "narrow door", "double doors", "front desk", "mail sorter"],
-			connections = {"north" : "dimHallway", "east" : "The doors are shut.", "west" : "frontTavern"},
+			connections = {"north" : "dimHallway", "east" : "The doors are shut.", "west" : "front tavern"},
 			name = "Tavern Entryway"):
 		location.__init__(self,description, interactions, connections, name)
 	def closetOpen(self):
@@ -276,11 +273,11 @@ class mainHall(location):
 			description = """Main hall description.
 			""",
 			interactions = ["guest1", "guest2", "bar", "fireplace", "artwork"],
-			connections = {"north door" : "guest1Room",
-			"east door left" : "locked",
-			"east door right" : "guest2Room",
-			"south door" : "guest3Room",
-			"west" : "tavernEntryway"},
+			connections = {"north door" : "guest room 1",
+				"east door left" : "locked",
+				"east door right" : "guest room 2",
+				"south door" : "guest room 3",
+				"west" : "tavern entryway"},
 			name = "Main Hall"):
 		location.__init__(self, description, interactions, connections, name)
 
@@ -289,7 +286,7 @@ class guest1Room(location):
 			description = """Guest room 1 Description
 			""",
 			interactions = ["stuff"],
-			connections = {"west" : "mainHall"},
+			connections = {"west" : "main hall"},
 			name = "so-and-so's Room"):
 		location.__init__(self, description, interactions, connections, name)
 
@@ -298,7 +295,7 @@ class guest2Room(location):
 			description = """Guest room 2 Description
 			""",
 			interactions = ["stuff"],
-			connections = {"west" : "mainHall", "east" : "window locked"},
+			connections = {"west" : "main hall", "east" : "window locked"},
 			name = "so-and-so's Room"):
 		location.__init__(self, description, interactions, connections, name)
 
@@ -307,7 +304,7 @@ class guest3Room(location):
 			description = """Guest room 3 Description
 			""",
 			interactions = ["stuff"],
-			connections = {"north" : "mainHall"},
+			connections = {"north" : "main hall"},
 			name = "so-and-so's Room"):
 		location.__init__(self, description, interactions, connections, name)
 
@@ -316,7 +313,7 @@ class playerRoom(location):
 			description = """Player room Description
 			""",
 			interactions = ["stuff"],
-			connections = {"south" : "tavernEntryway", "secret passage" : "cellar"},
+			connections = {"south" : "tavern entryway", "secret passage" : "cellar"},
 			name = "Your Room"):
 		location.__init__(self, description, interactions, connections, name)
 
@@ -325,7 +322,7 @@ class cellar(location):
 			description = """Cellar Description
 			""",
 			interactions = ["stuff"],
-			connections = {"west" : "mainHall", "up" : "playerRoom"},
+			connections = {"west" : "main hall", "up" : "player room"},
 			name = "Cellar"):
 		location.__init__(self, description, interactions, connections, name)
 
@@ -334,7 +331,7 @@ class hostessRoom(location):
 			description = """Hostess room Description
 			""",
 			interactions = ["stuff"],
-			connections = {"east" : "tavernEntryway"},
+			connections = {"east" : "tavern entryway"},
 			name = "so-and-so's Room"):
 		location.__init__(self, description, interactions, connections, name)
 

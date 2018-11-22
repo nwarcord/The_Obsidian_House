@@ -6,7 +6,9 @@
 
 	-- [DONE] Update location classes for new definition
 	
-	-- Add movement
+	-- [DONE] Add movement
+	
+	-- Location events (door opening, combat scenario, etc.)
 	
 	-- Check/Add feature to check if player has visited a location previously
 	
@@ -14,8 +16,8 @@
 	
 	-- Allow player to drop items and reflect that in location description
 	
-	--Instantiate all rooms at runtime
+	--[DONE] Instantiate all rooms at runtime
 	
-	--Make a lookup table in the main file
+	--[DONE] Make a lookup table in the main file
 	
-		--Lookup would reference the object name
+		--[DONE] Lookup would reference the object name

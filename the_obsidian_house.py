@@ -2,7 +2,6 @@ import re
 import regex
 from bitarray import bitarray
 from class_the_obsidian_house import *
-import ast
 
 cmdExit = re.compile(("^(Quit|Exit){1}$"),re.I)
 #cmdInv = re.compile("(Search|Examine)? Inventory",re.I)
@@ -24,10 +23,10 @@ def user_input(cmmd):
 	#elif cmdOpen:
 		#return
 	elif cmdMove.search(cmmd):
-		player.playerMove(cmmd)
-		boo = player.location.visited
-		printLocation(boo)
-		player.location.visited = True
+		player.playerMove(cmmd,lookupTable)
+		#boo = player.location.visited
+		#printLocation(boo)
+		#player.location.visited = True
 	elif cmdScan.search(cmmd):
 		player.printLocation()
 		#printLocation(False)
@@ -111,9 +110,40 @@ def gameExit():
 	No. They speak out of ignorance. Let us hope they remain comfortably so."
 		-- Lira, of the Crimson Marsh - C.S.E. to Earth, 1802 C.E.
 	""")
-	raise SystemExit
+	raise SystemExit	
 
-player = player(frontTavern(),strangeToken())
+frontTavern = frontTavern()
+shack = shack()
+northTavern = northTavern()
+tavernEntryway = tavernEntryway()
+sideAlley = sideAlley()
+#burnedStorehouse = burnedStorehouse()
+mainHall = mainHall()
+guest1Room = guest1Room()
+guest2Room = guest2Room()
+guest3Room = guest3Room()
+playerRoom = playerRoom()
+cellar = cellar()
+hoshostessRoom = hostessRoom()	
+player = player(frontTavern,strangeToken())
+
+lookupTable = {
+
+	"shack" : shack,
+	"front tavern" : frontTavern,
+	"north tavern" : northTavern,
+	"tavern entryway" : tavernEntryway,
+	"side alley" : sideAlley,
+	"burned storehouse" : burnedStorehouse,
+	"main hall" : mainHall,
+	"guest room 1" : guest1Room,
+	"guest room 2" : guest2Room,
+	"guest room 3" : guest3Room,
+	"player room" : playerRoom,
+	"cellar" : cellar,
+	"hostess room" : hostessRoom
+}
+
 welcomeMsg()
 #player.pickAttributes()
 #player.printAttributes()
@@ -121,5 +151,3 @@ print("-"*52)
 print(player.location.description)
 while True:
 	user_input(input(">>> ",))
-
-#print ("Works!")
