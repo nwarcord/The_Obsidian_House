@@ -27,3 +27,6 @@
 		--[DONE] Lookup would reference the object name
 		
 	-- Mention directions in the location descriptions
+	
+	--Add "items" variable in location class to differentiate between objects
+	that can be taken and those that can only be examined.

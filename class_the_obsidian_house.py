@@ -26,8 +26,9 @@ class player:
 		self.location = location
 		self.inv.append(item)
 	def takeItem(self, thing):
-		self.inv.append(thing)
-		self.location.interactions[thing] = "{} is no longer here.".format(thing)
+		self.inv.append(itemList[thing])
+		print("\nYou take the {}.".format(thing))
+		#self.location.interactions[thing] = "{} is no longer here.".format(thing)
 	def printAttributes(self):
 		#print("\nYour attributes are:\n")
 		for i in self.attributes:
@@ -149,11 +150,16 @@ class location:
 	def printInteractions(self, thing):
 		if i in interactions:
 			print (interactions[i])
+	def openObject(self, thing):
+		print("\nThere is no {} to open.\n".format(thing))
+	def takeObject(self, thing):
+		print ("\nThere is no {} to take.\n".format(thing))
 
 class item:
 	
-	def __init__(self,description,name):
+	def __init__(self,description,location,name):
 		self.description = description
+		self.location = location
 		self.name = name
 	#description = ""
 	#location = ""
@@ -264,10 +270,23 @@ class shack(location):
 	def __init__(self,
 			description = """Shack description.
 			""",
-			interactions = ["book", "strange metal", "figment"],
+			interactions = {
+				"book" : """\nLeather-bound and crisp.\
+				\nThe elements have had no effect on its condition.
+				""",
+				"strange metal" : "\nDark and cold.\n",
+				"figment" : "Something here."},
 			connections = {"east" : "north tavern", "south" : "front tavern"},
 			name = "Shack"):
 		location.__init__(self, description, interactions, connections, name)
+		
+	def takeObject(self, thing):
+		if thing == "book" and self.interactions[thing] != "Gone":
+			self.interactions[thing] = "Gone"
+			return True
+		else:
+			print ("There is no {} here to take.".format(thing))
+			return False
 
 class burnedStorehouse(location):
 	def __init__(self,
@@ -366,11 +385,22 @@ class hostessRoom(location):
 class strangeToken(item):
 	def __init__(self,
 			description = "A cold stone with a rune on it.",
+			location = "player",
 			name = "Strange Token"):
 		item.__init__(self,description,name)
 
+class oldBook(item):
+	def __init__(self,
+			description = """Leather-bound and crisp.\
+			\nThe elements have had no effect on its condition.
+			""",
+			location = "shack",
+			name = "Old Book"):
+		item.__init__(self,description,name)
+
 itemList = {
-	"strange token" : strangeToken()
+	"strange token" : strangeToken(),
+	"book" : oldBook()
 }
 
 ####################################################

@@ -9,6 +9,7 @@ cmdScan = re.compile(("^(Scan|Look){1}$"),re.I)
 cmdHelp = re.compile(("^(Help){1}$"),re.I)
 cmdMove = re.compile(r"^(n|north|s|south|e|east|w|west|up|down){1}$",re.I)
 cmdOpen = re.compile(("^Open\s(\w+)$"),re.I)
+cmdTake = re.compile(("^Take\s(\w+)$"),re.I)
 
 def user_input(cmmd):
 	cmdExamine = regex.search(r"(?<=Examine\s)((\w+)(?:\s)*)+",cmmd,regex.I)
@@ -26,10 +27,14 @@ def user_input(cmmd):
 			if i in temp:
 				print(player.location.interactions[i])
 				return
-		print("You can't do that.")
+		print("\nYou can't do that.\n")
 	elif cmdOpen.match(cmmd):
 		x = cmdOpen.match(cmmd)
 		player.location.openObject(x.group(1))
+	elif cmdTake.match(cmmd):
+		x = cmdTake.match(cmmd)
+		if player.location.takeObject(x.group(1)):
+			player.takeItem(x.group(1))
 	elif cmdMove.search(cmmd):
 		failed = str(player.location)
 		player.playerMove(cmmd,lookupTable)
