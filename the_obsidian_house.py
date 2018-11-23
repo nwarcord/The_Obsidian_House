@@ -9,10 +9,11 @@ cmdScan = re.compile(("^(Scan|Look){1}$"),re.I)
 cmdHelp = re.compile(("^(Help){1}$"),re.I)
 cmdMove = re.compile(r"^(n|north|s|south|e|east|w|west|up|down){1}$",re.I)
 cmdOpen = re.compile(("^Open\s(\w+)$"),re.I)
-cmdTake = re.compile(("^Take\s(\w+)$"),re.I)
+#cmdTake = re.compile(("^Take\s(\w+)$"),re.I)
 
 def user_input(cmmd):
 	cmdExamine = regex.search(r"(?<=Examine\s)((\w+)(?:\s)*)+",cmmd,regex.I)
+	cmdTake = regex.search(r"(?<=Take\s)((\w+)(?:\s)*)+",cmmd,regex.I)
 	if cmdExit.search(cmmd):
 		gameExit()
 	elif cmdInv.search(cmmd):
@@ -27,14 +28,27 @@ def user_input(cmmd):
 			if i in temp:
 				print(player.location.interactions[i])
 				return
+		if temp in player.inv:
+			print(itemTable[temp][0])
+			return
 		print("\nYou can't do that.\n")
 	elif cmdOpen.match(cmmd):
 		x = cmdOpen.match(cmmd)
 		player.location.openObject(x.group(1))
-	elif cmdTake.match(cmmd):
-		x = cmdTake.match(cmmd)
-		if player.location.takeObject(x.group(1)):
-			player.takeItem(x.group(1))
+	#elif cmdTake.match(cmmd):
+	elif cmdTake:
+		#x = cmdTake.match(cmmd)
+		#if player.location.takeObject(x.group(1)):
+		#if x.group(1) in player.location.items:
+			#player.takeItem(x.group(1))
+		thing = cmdTake.captures()
+		thing = "".join(thing)
+		if thing in player.location.items:
+			player.takeItem(thing)
+			return
+		else:
+			print("\nThere is no {} to take.\n".format(thing))
+			return
 	elif cmdMove.search(cmmd):
 		failed = str(player.location)
 		player.playerMove(cmmd,lookupTable)
@@ -139,7 +153,8 @@ guest3Room = guest3Room()
 playerRoom = playerRoom()
 cellar = cellar()
 hoshostessRoom = hostessRoom()	
-player = player(frontTavern,strangeToken())
+#player = player(frontTavern,strangeToken())
+player = player(frontTavern,"strange token")
 
 lookupTable = {
 

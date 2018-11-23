@@ -25,10 +25,15 @@ class player:
 	def __init__(self,location,item):
 		self.location = location
 		self.inv.append(item)
-	def takeItem(self, thing):
-		self.inv.append(itemList[thing])
-		print("\nYou take the {}.".format(thing))
+	#def takeItem(self, thing):
+		#self.inv.append(itemList[thing])
+		#print("\nYou take the {}.".format(thing))
 		#self.location.interactions[thing] = "{} is no longer here.".format(thing)
+	def takeItem(self, thing):
+		self.inv.append(thing)
+		itemTable[thing][1] = "player"
+		print("\nYou take the {}.\n".format(thing))
+		self.location.items.remove(thing)
 	def printAttributes(self):
 		#print("\nYour attributes are:\n")
 		for i in self.attributes:
@@ -110,11 +115,16 @@ class player:
 			print("\n--{}--\n".format(self.location.name))
 		else:
 			self.location.printDescription()
+	#def printInv(self):
+		#print ("\nYour pockets contain:\n")
+		#for i in self.inv:
+			#print ("\t-",i.name)
+		#print("")
 	def printInv(self):
 		print ("\nYour pockets contain:\n")
 		for i in self.inv:
-			print ("\t-",i.name)
-		print("")
+			print ("\t-",i)
+			print("")
 	def playerMove(self, x, table):
 		temp = ["north", "south", "east", "west", "up", "down"]
 		for i in temp:
@@ -137,8 +147,9 @@ class location:
 	
 	visited = False
 	
-	def __init__(self, description, interactions, connections, name):
+	def __init__(self, description, items, interactions, connections, name):
 		self.description = description
+		self.items = items
 		self.interactions = interactions
 		self.connections = connections
 		self.name = name
@@ -155,12 +166,14 @@ class location:
 	def takeObject(self, thing):
 		print ("\nThere is no {} to take.\n".format(thing))
 
+"""
 class item:
 	
 	def __init__(self,description,location,name):
 		self.description = description
 		self.location = location
 		self.name = name
+"""
 	#description = ""
 	#location = ""
 	#event_changes = {}
@@ -195,6 +208,7 @@ class frontTavern(location):
 			\nYou stand outside of a wooden building, the river at your back.\
 			\nThe gray paint is chipping, but the structure appears sturdy.\
 			\nThere is a sign above the door.\n""",
+			items = [],
 			interactions = {
 				"sign" : """\nBlackened wood swings above the door.\
 				\nThe markings on it archaic and rough.\
@@ -214,7 +228,7 @@ class frontTavern(location):
 				"south" : "side alley",
 				"east" : "\nThe door is shut.\n"},
 			name = "Front Tavern"):
-		location.__init__(self,description,interactions,connections,name)
+		location.__init__(self,description,items,interactions,connections,name)
 		
 	def openObject(self, thing):
 		if thing == "door" and self.connections["east"] != "tavern entryway":
@@ -236,10 +250,11 @@ class northTavern(location):
 	def __init__(self,
 			description = """\nAnother description here.
 			""",
+			items = [],
 			interactions = ["ground", "window", "trap door"],
 			connections = {"west" : "shack", "east": "burned storehouse"},
 			name = "North Tavern"):
-		location.__init__(self, description, interactions, connections, name)
+		location.__init__(self, description, items, interactions, connections, name)
 
 class sideAlley(location):
 
@@ -254,10 +269,11 @@ class sideAlley(location):
 	def __init__(self,
 			description = """Side alley description.
 			""",
+			items = [],
 			interactions = ["ground", "papers", "garbage"],
 			connections = {"east" : "burned storehouse", "west" : "front tavern"},
 			name = "Side Alley"):
-		location.__init__(self, description, interactions, connections, name)
+		location.__init__(self, description, items, interactions, connections, name)
 	
 class shack(location):
 
@@ -270,15 +286,13 @@ class shack(location):
 	def __init__(self,
 			description = """Shack description.
 			""",
+			items = ["old book", "metal chunk"],
 			interactions = {
-				"book" : """\nLeather-bound and crisp.\
-				\nThe elements have had no effect on its condition.
-				""",
-				"strange metal" : "\nDark and cold.\n",
+				#"strange metal" : "\nDark and cold.\n",
 				"figment" : "Something here."},
 			connections = {"east" : "north tavern", "south" : "front tavern"},
 			name = "Shack"):
-		location.__init__(self, description, interactions, connections, name)
+		location.__init__(self, description, items, interactions, connections, name)
 		
 	def takeObject(self, thing):
 		if thing == "book" and self.interactions[thing] != "Gone":
@@ -291,21 +305,23 @@ class shack(location):
 class burnedStorehouse(location):
 	def __init__(self,
 			description = "Something here.",
+			items = [],
 			interactions = {"stuff" : "and info"},
 			connections = {
 				"north" : "north tavern",
 				"south" : "side alley"},
 			name = "Burned Storehouse"):
-		location.__init__(self, description,interactions,connections,name)
+		location.__init__(self, description,items,interactions,connections,name)
 	
 class tavernEntryway(location):
 	def __init__(self,
 			description = """Entryway description here.
 			""",
+			items = [],
 			interactions = ["hostess", "narrow door", "double doors", "front desk", "mail sorter"],
 			connections = {"north" : "dimHallway", "east" : "The doors are shut.", "west" : "front tavern"},
 			name = "Tavern Entryway"):
-		location.__init__(self,description, interactions, connections, name)
+		location.__init__(self,description, items, interactions, connections, name)
 	def closetOpen(self):
 		pass
 	def mailEntry(self):
@@ -315,6 +331,7 @@ class mainHall(location):
 	def __init__(self,
 			description = """Main hall description.
 			""",
+			items = [],
 			interactions = ["guest1", "guest2", "bar", "fireplace", "artwork"],
 			connections = {"north door" : "guest room 1",
 				"east door left" : "locked",
@@ -322,87 +339,120 @@ class mainHall(location):
 				"south door" : "guest room 3",
 				"west" : "tavern entryway"},
 			name = "Main Hall"):
-		location.__init__(self, description, interactions, connections, name)
+		location.__init__(self, description, items, interactions, connections, name)
 
 class guest1Room(location):
 	def __init__(self,
 			description = """Guest room 1 Description
 			""",
+			items = [],
 			interactions = ["stuff"],
 			connections = {"west" : "main hall"},
 			name = "so-and-so's Room"):
-		location.__init__(self, description, interactions, connections, name)
+		location.__init__(self, description, items, interactions, connections, name)
 
 class guest2Room(location):
 	def __init__(self,
 			description = """Guest room 2 Description
 			""",
+			items = [],
 			interactions = ["stuff"],
 			connections = {"west" : "main hall", "east" : "window locked"},
 			name = "so-and-so's Room"):
-		location.__init__(self, description, interactions, connections, name)
+		location.__init__(self, description, items, interactions, connections, name)
 
 class guest3Room(location):
 	def __init__(self,
 			description = """Guest room 3 Description
 			""",
+			items = [],
 			interactions = ["stuff"],
 			connections = {"north" : "main hall"},
 			name = "so-and-so's Room"):
-		location.__init__(self, description, interactions, connections, name)
+		location.__init__(self, description, items, interactions, connections, name)
 
 class playerRoom(location):
 	def __init__(self,
 			description = """Player room Description
 			""",
+			items = [],
 			interactions = ["stuff"],
 			connections = {"south" : "tavern entryway", "secret passage" : "cellar"},
 			name = "Your Room"):
-		location.__init__(self, description, interactions, connections, name)
+		location.__init__(self, description, items, interactions, connections, name)
 
 class cellar(location):
 	def __init__(self,
 			description = """Cellar Description
 			""",
+			items = [],
 			interactions = ["stuff"],
 			connections = {"west" : "main hall", "up" : "player room"},
 			name = "Cellar"):
-		location.__init__(self, description, interactions, connections, name)
+		location.__init__(self, description, items, interactions, connections, name)
 
 class hostessRoom(location):
 	def __init__(self,
 			description = """Hostess room Description
 			""",
+			items = [],
 			interactions = ["stuff"],
 			connections = {"east" : "tavern entryway"},
 			name = "so-and-so's Room"):
-		location.__init__(self, description, interactions, connections, name)
+		location.__init__(self, description, items, interactions, connections, name)
 
 ####################################################
 ##				    --Items--					  ##
 ####################################################
 
+#class item:
+
+itemTable = {
+	"strange token" : ["""\nA cold stone with a rune on it.
+		""", "player"],
+	"old book" : ["""\nLeather-bound and crisp.\
+		\nThe elements have had no effect on its condition.
+		""", "shack"],
+	"metal chunk" : ["""\nDark and cold.
+		""", "shack"]
+}
+	#names = {}
+	#descriptions = {}
+	##Or could have a dictionary of lists with [name, description] as values.
+	##May not even need a class for items if all items are contained in a dictionary.
+	##Would have the items in a list in locations.
+	##Would also need a list in location classes for items that have been dropped there.
+	##Still unsure if should keep classes for items.
+"""
 class strangeToken(item):
 	def __init__(self,
 			description = "A cold stone with a rune on it.",
 			location = "player",
 			name = "Strange Token"):
-		item.__init__(self,description,name)
+		item.__init__(self,description,location,name)
 
 class oldBook(item):
 	def __init__(self,
-			description = """Leather-bound and crisp.\
+			description = Leather-bound and crisp.\
 			\nThe elements have had no effect on its condition.
-			""",
+			,
 			location = "shack",
 			name = "Old Book"):
-		item.__init__(self,description,name)
+		item.__init__(self,description,location,name)
 
+class metalImplement(item):
+	def __init__(self,
+			description = "\nDark and cold.\n",
+			location = "shack",
+			name = "metal chunk"):
+		item.__init__(self,description,location,name)
+"""
+"""
 itemList = {
 	"strange token" : strangeToken(),
-	"book" : oldBook()
+	"old book" : oldBook()
 }
-
+"""
 ####################################################
 ##				  --Functions--					  ##
 ####################################################
