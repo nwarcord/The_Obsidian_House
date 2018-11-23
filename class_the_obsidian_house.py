@@ -29,7 +29,8 @@ class player:
 		self.inv.append(thing)
 		itemTable[thing][1] = "player"
 		print("\nYou take the {}.\n".format(thing))
-		self.location.items.remove(thing)
+		#self.location.items.remove(thing)
+		self.location.removeItem(thing)
 	def printAttributes(self):
 		#print("\nYour attributes are:\n")
 		for i in self.attributes:
@@ -154,8 +155,10 @@ class location:
 			print (interactions[i])
 	def openObject(self, thing):
 		print("\nThere is no {} to open.\n".format(thing))
-	def takeObject(self, thing):
-		print ("\nThere is no {} to take.\n".format(thing))
+	def removeItem(self, thing):
+		if thing in self.items:
+			self.description = self.description.replace(itemTable[thing][2],"")
+			self.items.remove(thing)
 
 class gameState:
 
@@ -262,24 +265,24 @@ class shack(location):
 ## or flat out not work.
 ####
 
+	bookD = "An old book stands out on top of the desk.\n"
+	metalD = "Shining in the lamplight, a chunk of metal lies on the ground.\n"
+
 	def __init__(self,
-			description = """Shack description.
-			""",
-			items = ["old book", "metal chunk"],
+			description = """The wooden walls are stained and waterlogged.\
+			\nOnce smooth clay, the floor is now closer to mud.\
+			\nAn earthy smell passes through your nose and settles on your tongue.\
+			\nThere is a desk, defiantly standing despite its age.\
+			\n""" + bookD + metalD,
+			items = ["old book", "chunk of metal"],
 			interactions = {
-				#"strange metal" : "\nDark and cold.\n",
 				"figment" : "Something here."},
 			connections = {"east" : "north tavern", "south" : "front tavern"},
 			name = "Shack"):
 		location.__init__(self, description, items, interactions, connections, name)
 		
-	#def takeObject(self, thing):
-		#if thing == "book" and self.interactions[thing] != "Gone":
-			#self.interactions[thing] = "Gone"
-			#return True
-		#else:
-			#print ("There is no {} here to take.".format(thing))
-			#return False
+	def encounter(self):
+		pass
 
 class burnedStorehouse(location):
 	def __init__(self,
@@ -389,9 +392,9 @@ itemTable = {
 		""", "player"],
 	"old book" : ["""\nLeather-bound and crisp.\
 		\nThe elements have had no effect on its condition.
-		""", "shack"],
-	"metal chunk" : ["""\nDark and cold.
-		""", "shack"]
+		""", "shack", shack.bookD],
+	"chunk of metal": ["""\nDark and cold.
+		""", "shack", shack.metalD]
 }
 
 ####################################################
@@ -400,3 +403,5 @@ itemTable = {
 
 def eventTracker():
 	pass
+
+trashWords = {"chunk","old","a","an","of","the"}

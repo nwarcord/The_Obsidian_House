@@ -11,6 +11,9 @@ cmdMove = re.compile(r"^(n|north|s|south|e|east|w|west|up|down){1}$",re.I)
 cmdOpen = re.compile(("^Open\s(\w+)$"),re.I)
 
 def user_input(cmmd):
+	for i in cmmd.split():
+		if i in trashWords:
+			cmmd = cmmd.replace(i,"")
 	cmdExamine = regex.search(r"(?<=Examine\s)((\w+)(?:\s)*)+",cmmd,regex.I)
 	cmdTake = regex.search(r"(?<=Take\s)((\w+)(?:\s)*)+",cmmd,regex.I)
 	if cmdExit.search(cmmd):
@@ -48,15 +51,15 @@ def user_input(cmmd):
 		player.location.openObject(x.group(1))
 	elif cmdTake:
 		thing = cmdTake.captures()
-		thing = "".join(thing)
-		thing = thing.lower()
+		thing = "".join(thing).lower()
 		if thing in player.location.items:
 			player.takeItem(thing)
 			return
 		for i in player.location.items:
-			if i in thing:
-				player.takeItem(i)
-				return
+			for j in i.split():
+				if thing == j:
+					player.takeItem(i)
+					return
 		else:
 			print("\nThere is no {} to take.\n".format(thing))
 			return

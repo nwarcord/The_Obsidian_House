@@ -3,13 +3,30 @@
 --To Do List--
 
 ####################################################
-
-	-- [DONE] Update location classes for new definition
-	
-	-- [DONE] Add movement
 	
 	-- (partial) Location events (door opening, combat scenario, etc.)
 	
+	-- Location descriptions need to reflect the items that are currently there.
+	
+	-- Allow player to drop items and reflect that in location description
+	
+	-- Mention directions in the location descriptions
+	
+####################################################
+
+--Completed--
+
+####################################################
+
+	-- [DONE] Add "items" variable in location class to differentiate between objects
+	that can be taken and those that can only be examined.
+
+	--[DONE] Instantiate all rooms at runtime
+	
+	--[DONE] Make a lookup table in the main file
+	
+		--[DONE] Lookup would reference the object name
+		
 	-- [DONE] Check/Add feature to check if player has visited a location previously
 	
 	-- [DONE] Add item functionality
@@ -18,15 +35,6 @@
 	
 	-- [DONE] Allow player to take items
 	
-	-- Allow player to drop items and reflect that in location description
+	-- [DONE] Update location classes for new definition
 	
-	--[DONE] Instantiate all rooms at runtime
-	
-	--[DONE] Make a lookup table in the main file
-	
-		--[DONE] Lookup would reference the object name
-		
-	-- Mention directions in the location descriptions
-	
-	-- [DONE] Add "items" variable in location class to differentiate between objects
-	that can be taken and those that can only be examined.
+	-- [DONE] Add movement
