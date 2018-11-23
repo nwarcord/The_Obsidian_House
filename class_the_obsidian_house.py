@@ -25,10 +25,6 @@ class player:
 	def __init__(self,location,item):
 		self.location = location
 		self.inv.append(item)
-	#def takeItem(self, thing):
-		#self.inv.append(itemList[thing])
-		#print("\nYou take the {}.".format(thing))
-		#self.location.interactions[thing] = "{} is no longer here.".format(thing)
 	def takeItem(self, thing):
 		self.inv.append(thing)
 		itemTable[thing][1] = "player"
@@ -115,11 +111,6 @@ class player:
 			print("\n--{}--\n".format(self.location.name))
 		else:
 			self.location.printDescription()
-	#def printInv(self):
-		#print ("\nYour pockets contain:\n")
-		#for i in self.inv:
-			#print ("\t-",i.name)
-		#print("")
 	def printInv(self):
 		print ("\nYour pockets contain:\n")
 		for i in self.inv:
@@ -166,18 +157,6 @@ class location:
 	def takeObject(self, thing):
 		print ("\nThere is no {} to take.\n".format(thing))
 
-"""
-class item:
-	
-	def __init__(self,description,location,name):
-		self.description = description
-		self.location = location
-		self.name = name
-"""
-	#description = ""
-	#location = ""
-	#event_changes = {}
-
 class gameState:
 
 	events = {
@@ -204,7 +183,7 @@ class npc:
 class frontTavern(location):
 
 	def __init__(self,
-			description = """\nThe air at dusk is humid on the edge of the -blank- River.\
+			description = """The air at dusk is humid on the edge of the -blank- River.\
 			\nYou stand outside of a wooden building, the river at your back.\
 			\nThe gray paint is chipping, but the structure appears sturdy.\
 			\nThere is a sign above the door.\n""",
@@ -248,7 +227,7 @@ class frontTavern(location):
 
 class northTavern(location):
 	def __init__(self,
-			description = """\nAnother description here.
+			description = """Another description here.
 			""",
 			items = [],
 			interactions = ["ground", "window", "trap door"],
@@ -294,13 +273,13 @@ class shack(location):
 			name = "Shack"):
 		location.__init__(self, description, items, interactions, connections, name)
 		
-	def takeObject(self, thing):
-		if thing == "book" and self.interactions[thing] != "Gone":
-			self.interactions[thing] = "Gone"
-			return True
-		else:
-			print ("There is no {} here to take.".format(thing))
-			return False
+	#def takeObject(self, thing):
+		#if thing == "book" and self.interactions[thing] != "Gone":
+			#self.interactions[thing] = "Gone"
+			#return True
+		#else:
+			#print ("There is no {} here to take.".format(thing))
+			#return False
 
 class burnedStorehouse(location):
 	def __init__(self,
@@ -405,8 +384,6 @@ class hostessRoom(location):
 ##				    --Items--					  ##
 ####################################################
 
-#class item:
-
 itemTable = {
 	"strange token" : ["""\nA cold stone with a rune on it.
 		""", "player"],
@@ -416,43 +393,7 @@ itemTable = {
 	"metal chunk" : ["""\nDark and cold.
 		""", "shack"]
 }
-	#names = {}
-	#descriptions = {}
-	##Or could have a dictionary of lists with [name, description] as values.
-	##May not even need a class for items if all items are contained in a dictionary.
-	##Would have the items in a list in locations.
-	##Would also need a list in location classes for items that have been dropped there.
-	##Still unsure if should keep classes for items.
-"""
-class strangeToken(item):
-	def __init__(self,
-			description = "A cold stone with a rune on it.",
-			location = "player",
-			name = "Strange Token"):
-		item.__init__(self,description,location,name)
 
-class oldBook(item):
-	def __init__(self,
-			description = Leather-bound and crisp.\
-			\nThe elements have had no effect on its condition.
-			,
-			location = "shack",
-			name = "Old Book"):
-		item.__init__(self,description,location,name)
-
-class metalImplement(item):
-	def __init__(self,
-			description = "\nDark and cold.\n",
-			location = "shack",
-			name = "metal chunk"):
-		item.__init__(self,description,location,name)
-"""
-"""
-itemList = {
-	"strange token" : strangeToken(),
-	"old book" : oldBook()
-}
-"""
 ####################################################
 ##				  --Functions--					  ##
 ####################################################

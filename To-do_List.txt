@@ -12,11 +12,11 @@
 	
 	-- [DONE] Check/Add feature to check if player has visited a location previously
 	
-	-- Add item functionality
+	-- [DONE] Add item functionality
 	
-		--Function to check if item in room or player inventory
+		-- [DONE] Function to check if item in room or player inventory
 	
-	-- Allow player to take items
+	-- [DONE] Allow player to take items
 	
 	-- Allow player to drop items and reflect that in location description
 	
@@ -28,5 +28,5 @@
 		
 	-- Mention directions in the location descriptions
 	
-	--Add "items" variable in location class to differentiate between objects
+	-- [DONE] Add "items" variable in location class to differentiate between objects
 	that can be taken and those that can only be examined.

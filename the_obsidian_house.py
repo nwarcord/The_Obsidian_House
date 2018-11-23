@@ -9,7 +9,6 @@ cmdScan = re.compile(("^(Scan|Look){1}$"),re.I)
 cmdHelp = re.compile(("^(Help){1}$"),re.I)
 cmdMove = re.compile(r"^(n|north|s|south|e|east|w|west|up|down){1}$",re.I)
 cmdOpen = re.compile(("^Open\s(\w+)$"),re.I)
-#cmdTake = re.compile(("^Take\s(\w+)$"),re.I)
 
 def user_input(cmmd):
 	cmdExamine = regex.search(r"(?<=Examine\s)((\w+)(?:\s)*)+",cmmd,regex.I)
@@ -21,31 +20,43 @@ def user_input(cmmd):
 	elif cmdExamine:
 		temp = cmdExamine.captures()
 		temp = "".join(temp)
+		temp = temp.lower()
 		if temp in player.location.interactions:
 			print(player.location.interactions[temp])
+			return
+		if temp in player.location.items:
+			print(itemTable[temp][0])
 			return
 		for i in player.location.interactions:
 			if i in temp:
 				print(player.location.interactions[i])
 				return
+		for i in player.location.items:
+			if i in temp:
+				print(itemTable[i][0])
+				return
 		if temp in player.inv:
 			print(itemTable[temp][0])
 			return
+		for i in player.inv:
+			if i in temp:
+				print(itemTable[i][0])
+				return
 		print("\nYou can't do that.\n")
 	elif cmdOpen.match(cmmd):
 		x = cmdOpen.match(cmmd)
 		player.location.openObject(x.group(1))
-	#elif cmdTake.match(cmmd):
 	elif cmdTake:
-		#x = cmdTake.match(cmmd)
-		#if player.location.takeObject(x.group(1)):
-		#if x.group(1) in player.location.items:
-			#player.takeItem(x.group(1))
 		thing = cmdTake.captures()
 		thing = "".join(thing)
+		thing = thing.lower()
 		if thing in player.location.items:
 			player.takeItem(thing)
 			return
+		for i in player.location.items:
+			if i in thing:
+				player.takeItem(i)
+				return
 		else:
 			print("\nThere is no {} to take.\n".format(thing))
 			return
@@ -153,7 +164,6 @@ guest3Room = guest3Room()
 playerRoom = playerRoom()
 cellar = cellar()
 hoshostessRoom = hostessRoom()	
-#player = player(frontTavern,strangeToken())
 player = player(frontTavern,"strange token")
 
 lookupTable = {
@@ -177,6 +187,7 @@ welcomeMsg()
 #player.pickAttributes()
 #player.printAttributes()
 print("-"*52)
+print("")
 print(player.location.description)
 player.location.visited = True
 while True:
