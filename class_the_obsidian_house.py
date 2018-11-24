@@ -1,7 +1,7 @@
 from bitarray import bitarray
 
 ####################################################
-##				  --Classes--					  ##
+##				  --Player--					  ##
 ####################################################
 
 class player:
@@ -27,10 +27,19 @@ class player:
 		self.inv.append(item)
 	def takeItem(self, thing):
 		self.inv.append(thing)
+		self.location.removeItem(thing)
 		itemTable[thing][1] = "player"
+		if thing[0] in {'a','e','i','o','u'}:
+			itemTable[thing][2] = "There is an {} on the ground.\n".format(thing)
+		else:
+			itemTable[thing][2] = "There is a {} on the ground.\n".format(thing)
 		print("\nYou take the {}.\n".format(thing))
 		#self.location.items.remove(thing)
-		self.location.removeItem(thing)
+	def dropItem(self,thing):
+		self.inv.remove(thing)
+		self.location.items.append(thing)
+		self.location.description += itemTable[thing][2]
+		print("\nYou drop the {}.\n".format(thing))
 	def printAttributes(self):
 		#print("\nYour attributes are:\n")
 		for i in self.attributes:
@@ -135,6 +144,24 @@ class player:
 		print ("Input error")
 		return
 
+####################################################
+##				    --Items--					  ##
+####################################################
+
+itemTable = {
+	"strange token" : ["""\nA cold stone with a rune on it.
+		""", "player"],
+	"old book" : ["""\nLeather-bound and crisp.\
+		\nThe elements have had no effect on its condition.
+		""", "shack", "An old book stands out on top of the desk.\n"],
+	"chunk of metal": ["""\nDark and cold.
+		""", "shack", "Shining in the lamplight, a chunk of metal lies on the ground.\n"]
+}
+
+####################################################
+##				  --Locations--				  	  ##
+####################################################
+
 class location:
 	
 	visited = False
@@ -178,10 +205,6 @@ class npc:
 		self.location = location
 		self.health = health
 		self.alive = alive
-
-####################################################
-##				  --Locations--				  	  ##
-####################################################
 
 class frontTavern(location):
 
@@ -265,15 +288,15 @@ class shack(location):
 ## or flat out not work.
 ####
 
-	bookD = "An old book stands out on top of the desk.\n"
-	metalD = "Shining in the lamplight, a chunk of metal lies on the ground.\n"
+	#bookD = "An old book stands out on top of the desk.\n"
+	#metalD = "Shining in the lamplight, a chunk of metal lies on the ground.\n"
 
 	def __init__(self,
 			description = """The wooden walls are stained and waterlogged.\
 			\nOnce smooth clay, the floor is now closer to mud.\
 			\nAn earthy smell passes through your nose and settles on your tongue.\
 			\nThere is a desk, defiantly standing despite its age.\
-			\n""" + bookD + metalD,
+			\n""" + itemTable["old book"][2] + itemTable["chunk of metal"][2],#bookD + metalD,
 			items = ["old book", "chunk of metal"],
 			interactions = {
 				"figment" : "Something here."},
@@ -382,20 +405,6 @@ class hostessRoom(location):
 			connections = {"east" : "tavern entryway"},
 			name = "so-and-so's Room"):
 		location.__init__(self, description, items, interactions, connections, name)
-
-####################################################
-##				    --Items--					  ##
-####################################################
-
-itemTable = {
-	"strange token" : ["""\nA cold stone with a rune on it.
-		""", "player"],
-	"old book" : ["""\nLeather-bound and crisp.\
-		\nThe elements have had no effect on its condition.
-		""", "shack", shack.bookD],
-	"chunk of metal": ["""\nDark and cold.
-		""", "shack", shack.metalD]
-}
 
 ####################################################
 ##				  --Functions--					  ##

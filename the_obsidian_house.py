@@ -11,11 +11,9 @@ cmdMove = re.compile(r"^(n|north|s|south|e|east|w|west|up|down){1}$",re.I)
 cmdOpen = re.compile(("^Open\s(\w+)$"),re.I)
 
 def user_input(cmmd):
-	for i in cmmd.split():
-		if i in trashWords:
-			cmmd = cmmd.replace(i,"")
 	cmdExamine = regex.search(r"(?<=Examine\s)((\w+)(?:\s)*)+",cmmd,regex.I)
 	cmdTake = regex.search(r"(?<=Take\s)((\w+)(?:\s)*)+",cmmd,regex.I)
+	cmdDrop = regex.search(r"(?<=Drop\s)((\w+)(?:\s)*)+",cmmd,regex.I)
 	if cmdExit.search(cmmd):
 		gameExit()
 	elif cmdInv.search(cmmd):
@@ -52,6 +50,10 @@ def user_input(cmmd):
 	elif cmdTake:
 		thing = cmdTake.captures()
 		thing = "".join(thing).lower()
+		for i in thing.split():
+			if i in trashWords:
+				thing = thing.replace(i,"")
+				thing = thing.strip() #Deletes leading and trailing whitespace
 		if thing in player.location.items:
 			player.takeItem(thing)
 			return
@@ -63,6 +65,17 @@ def user_input(cmmd):
 		else:
 			print("\nThere is no {} to take.\n".format(thing))
 			return
+	elif cmdDrop:
+		thing = cmdDrop.captures()
+		thing = "".join(thing).lower()
+		if thing in player.inv:
+			player.dropItem(thing)
+			return
+		for i in player.inv:
+			for j in i.split():
+				if j == thing:
+					player.dropItem(i)
+					return
 	elif cmdMove.search(cmmd):
 		failed = str(player.location)
 		player.playerMove(cmmd,lookupTable)
