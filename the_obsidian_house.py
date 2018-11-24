@@ -20,8 +20,11 @@ def user_input(cmmd):
 		player.printInv()
 	elif cmdExamine:
 		temp = cmdExamine.captures()
-		temp = "".join(temp)
-		temp = temp.lower()
+		temp = "".join(temp).lower()
+		for i in temp.split():
+			if i in trashWords:
+				temp = temp.replace(i,"")
+				temp = temp.strip()
 		if temp in player.location.interactions:
 			print(player.location.interactions[temp])
 			return
@@ -43,6 +46,21 @@ def user_input(cmmd):
 			if i in temp:
 				print(itemTable[i][0])
 				return
+		for i in player.inv:
+			for j in i.split():
+				if j == temp:
+					print(itemTable[i][0])
+					return
+		for i in player.location.items:
+			for j in i.split():
+				if j == temp:
+					print(itemTable[i][0])
+					return
+		for i in player.location.interactions:
+			for j in i.split():
+				if j == temp:
+					print(itemTable[i][0])
+					return
 		print("\nYou can't do that.\n")
 	elif cmdOpen.match(cmmd):
 		x = cmdOpen.match(cmmd)

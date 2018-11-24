@@ -8,6 +8,8 @@
 	
 	-- Mention directions in the location descriptions
 	
+	-- Condense cmdExamine in user_input
+	
 ####################################################
 
 --Completed--

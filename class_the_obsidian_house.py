@@ -34,7 +34,6 @@ class player:
 		else:
 			itemTable[thing][2] = "There is a {} on the ground.\n".format(thing)
 		print("\nYou take the {}.\n".format(thing))
-		#self.location.items.remove(thing)
 	def dropItem(self,thing):
 		self.inv.remove(thing)
 		self.location.items.append(thing)
@@ -210,9 +209,11 @@ class frontTavern(location):
 
 	def __init__(self,
 			description = """The air at dusk is humid on the edge of the -blank- River.\
-			\nYou stand outside of a wooden building, the river at your back.\
+			\nYou stand to the east of a wooden building, the river at your back.\
 			\nThe gray paint is chipping, but the structure appears sturdy.\
-			\nThere is a sign above the door.\n""",
+			\nThere is a sign above the door.\
+			\nTo the north is a dilapidated shack, and a dark alley stares from the south.
+			""",
 			items = [],
 			interactions = {
 				"sign" : """\nBlackened wood swings above the door.\
