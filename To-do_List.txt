@@ -10,6 +10,8 @@
 	
 	-- Condense cmdExamine in user_input
 	
+	-- Add increase parsing functionality for "open" command
+	
 ####################################################
 
 --Completed--

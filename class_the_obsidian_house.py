@@ -1,4 +1,5 @@
 from bitarray import bitarray
+#import encounters_the_obsidian_house
 
 ####################################################
 ##				  --Player--					  ##
@@ -13,11 +14,12 @@ class player:
 		"focus" : 0
 	}
 	inv = []
+	location = ""
 	health = 100
 	mental_health = 100
 	condition = {
 		"arm_broken" : False,
-		"leg_broken" : False,
+		"leg_crippled" : False,
 		"eye_blinded" : False,
 		"tongue_removed" : False
 	}
@@ -47,6 +49,8 @@ class player:
 	def pickAttributes(self):
 		total = 20
 		pick = 0
+		for i in self.attributes:
+			self.attributes[i] = 0
 		print ("""
 		Before we delve into Obsidian House, you must
 		decide what type of character you wish to be.
@@ -189,7 +193,7 @@ class location:
 class gameState:
 
 	events = {
-		0 : "nighttime"
+		"figment" : True
 	}
 	bitfield = bitarray()
 	def updateState(self):
@@ -212,8 +216,8 @@ class frontTavern(location):
 			\nYou stand to the east of a wooden building, the river at your back.\
 			\nThe gray paint is chipping, but the structure appears sturdy.\
 			\nThere is a sign above the door.\
-			\nTo the north is a dilapidated shack, and a dark alley stares from the south.
-			""",
+			\nTo the north is a dilapidated shack, and a dark alley stares from the south.\
+			\n""",
 			items = [],
 			interactions = {
 				"sign" : """\nBlackened wood swings above the door.\
@@ -291,7 +295,8 @@ class shack(location):
 
 	#bookD = "An old book stands out on top of the desk.\n"
 	#metalD = "Shining in the lamplight, a chunk of metal lies on the ground.\n"
-
+	cursed = False
+	
 	def __init__(self,
 			description = """The wooden walls are stained and waterlogged.\
 			\nOnce smooth clay, the floor is now closer to mud.\
@@ -411,7 +416,212 @@ class hostessRoom(location):
 ##				  --Functions--					  ##
 ####################################################
 
-def eventTracker():
-	pass
+def game_over():
+	print("You died.")
+	raise SystemExit #Put core loop into a main function so that game can reset instead of quitting
 
-trashWords = {"chunk","old","a","an","of","the"}
+trashWords = {"chunk","old","a","an","of","the","please","now"}
+
+class encounter:
+
+	def __init__(self,name,location):
+		self.name = name
+		self.location = location
+
+	def action(self,choices):
+		while True:
+			counter = 0
+			print ("Do you...")
+			for i in choices:
+				counter += 1
+				print("\n{}. {}\n".format(counter,i))
+			choice = input(">>> ",)
+			if choice in choices:
+				return choice
+			elif choice == "exit":
+				gameExit()
+			else:
+				print("This is not the time to stumble...try again.")
+
+	def stat_check(self,stat,value):
+		if player.attributes[stat] >= value:
+			return True
+		else:
+			return False
+
+class figment(encounter):
+	def __init__(self,
+			name = "figment encounter",
+			location = "shack"):
+		encounter.__init__(self,name,location)
+
+def figmentEncounter():
+	print("""\nAs you take the book from the desk,\
+	\nan electric shock runs down your back.\
+	\nForming from the dense air in the shack,\
+	\na figure of dark purple and black energy leans forward.\
+	\nTheir eyes aglow with deep crimson, they measure you.\
+	\nA clawed hand extends toward you and the figment waits.
+	""")
+	print("Do you...")
+	print("""\n1. Run\
+	\n2. Give book\
+	\n3. Attack!\
+	\n4. Attempt to communicate
+	""")
+	while True:
+		choice = input(">>> ",)
+		if choice == "1":
+			if player.attributes["dexterity"] > 7 and player.attributes["focus"] > 7:
+				print ("\nA shadow falls over the shack. Eyes watch you from within.\n")
+				#player.location = frontTavern()
+				shack.cursed = True
+				gameState.events["figment"] = False
+				return "Ran"
+			else:
+				print("\nA claw, electric and sharp, slashes your back causing you to fall.\n")
+				player.health -= 15
+				print("Do you...")
+				print("""\n1. Give up the book and crawl away\
+				\n2.Hold on to the book and crawl away\
+				\n3.Attempt an attack while prone
+				""")
+				choice = input(">>> ",)
+				if choice == "1":
+					print("\nThere is a screeching cry. When your eyes open, the figment and book are gone.\n")
+					player.inv.remove("old book")
+					gameState.events["figment"] = False
+					player.mental_health -= 5
+					return
+				else:
+					print("""\nThe figment lifts a claw and crushes your leg.\
+					\nWhen you snap out of the pain, you find the figment\
+					\nand the book gone.
+					""")
+					player.inv.remove("old book")
+					gameState.events["figment"] = False
+					player.condition["leg_crippled"] = True
+					player.health -= 25
+					return
+		elif choice == "2":
+			print("""\nThe figment nods to you in appreciation.\
+			\nIt dissipates, leaving no trace of itself or the book.
+			""")
+			player.inv.remove("old book")
+			gameState.events["figment"] = False
+			return
+		elif choice == "3":
+			print("\nHow to proceed?\n")
+			print("\n1. Unarmed attack\n")
+			if "dagger" in player.inv and "chunk of metal" in player.inv:
+				print("""\n2. Attack with dagger\
+				\n3. Concentrate on chunk of metal
+				""")
+			elif "dagger" in player.inv:
+				print("\n2. Attack with dagger\n")
+			elif "chunk of metal" in player.inv:
+				print("\n2. Concentrate on chunk of metal\n")
+			choice = input(">>> ",)
+			if choice == "1":
+				print("""\nYour fist makes contact with the body of the figment,\
+				\ngoing numb and limp. As you recoil, a sharp pain erupts in your skull.
+				""")
+				player.mental_health -= 10
+				player.health -= 10
+				print("Do you...")
+				print("""\n1. Run\
+				\n2. Attack again\
+				\n3. Give book
+				""")
+				choice = input(">>> ",)
+				if choice == "1":
+					if player.attributes["dexterity"] > 7 and player.attributes["focus"] > 7:
+						print ("\nA shadow falls over the shack. Eyes watch you from within.\n")
+						#player.location = frontTavern()
+						shack.cursed = True
+						gameState.events["figment"] = False
+						return "Ran"
+					else:
+						print("\nA claw, electric and sharp, slashes your back causing you to fall.\n")
+						player.health -= 15
+						print("Do you...")
+						print("""\n1. Give up the book and crawl away\
+						\n2.Hold on to the book and crawl away\
+						\n3.Attempt an attack while prone
+						""")
+						choice = input(">>> ",)
+						if choice == "1":
+							print("\nThere is a screeching cry. When your eyes open, the figment and book are gone.\n")
+							player.inv.remove("old book")
+							gameState.events["figment"] = False
+							player.mental_health -= 5
+							return
+						else:
+							print("""\nThe figment lifts a claw and crushes your leg.\
+							\nWhen you snap out of the pain, you find the figment\
+							\nand the book gone.
+							""")
+							player.inv.remove("old book")
+							gameState.events["figment"] = False
+							player.condition["leg_crippled"] = True
+							player.health -= 25
+							return
+				elif choice == "2":
+					print("""\nYou step forward to punch again when another bolt\
+					\nof pain courses through your head.\
+					\nWhen it subsides and you open your eyes, the book and figment\
+					\nare gone.
+					""")
+					player.inv.remove("old book")
+					gameState.events["figment"] = False
+					player.mental_health -= 10
+					return
+				elif choice == "3":
+					print("""\nThe book is snatched from your hand.\
+					\nAs the figment fades, its eyes linger a moment longer,\
+					\nburning their glow into your mind.
+					""")
+					player.inv.remove("old book")
+					gameState.events["figment"] = False
+					return
+			if choice == "2" and "dagger" in player.inv:
+				pass
+		elif choice == "4":
+			pass
+		else:
+			print("This is not the time to stumble...try again.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -185,6 +185,7 @@ def gameExit():
 	""")
 	raise SystemExit	
 
+
 frontTavern = frontTavern()
 shack = shack()
 northTavern = northTavern()
@@ -217,12 +218,29 @@ lookupTable = {
 	"hostess room" : hostessRoom
 }
 
-welcomeMsg()
-#player.pickAttributes()
-#player.printAttributes()
-print("-"*52)
-print("")
-print(player.location.description)
-player.location.visited = True
-while True:
-	user_input(input(">>> ",))
+def main():
+	welcomeMsg()
+	player.pickAttributes()
+	#player.printAttributes()
+	print("-"*52)
+	print("")
+	print(player.location.description)
+	player.location.visited = True
+	while True:
+		eventTracker()
+		user_input(input(">>> ",))
+
+def eventTracker():
+	if player.health <= 0:
+		game_over()
+	if "old book" in player.inv and gameState.events["figment"] == True:
+		check = figmentEncounter()
+		if check == "Ran":
+			player.location = frontTavern
+	if player.location == shack and shack.cursed == True:
+		print("""There is a cold, disappointed sigh as you enter the shack.\
+		\nYour head is held still as a claw takes a chunk out of your throat.
+		""")
+		game_over()
+
+if __name__=='__main__':main()
