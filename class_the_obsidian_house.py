@@ -1,5 +1,5 @@
 from bitarray import bitarray
-#import encounters_the_obsidian_house
+import encounters_the_obsidian_house
 
 ####################################################
 ##				  --Player--					  ##
@@ -422,6 +422,7 @@ def game_over():
 
 trashWords = {"chunk","old","a","an","of","the","please","now"}
 
+"""
 class encounter:
 
 	def __init__(self,name,location):
@@ -454,6 +455,59 @@ class figment(encounter):
 			name = "figment encounter",
 			location = "shack"):
 		encounter.__init__(self,name,location)
+	def test(self):
+		temp = figment
+		while True:
+			temp = action(temp)
+			if temp == "Exit":
+				return
+"""
+"""
+def encounter(enc):
+	current = enc["start"]
+	while current != "Exit":
+		for choice in current:
+			if choice == "Prompt":
+				print (current[choice])
+			elif choice == "check":
+				check = True
+				for i in current[choice]:
+					if stat_check(i[0],i[1]) is False:
+						check = False
+						break
+				if check == True:
+					current = current[choice]["passed"]
+					break
+				else:
+					current = current[choice]["failed"]
+					break
+			else:
+				print ("{}. {}".format(choice, current[choice][0]))
+		print ("")
+		pick = input(">>> ",)
+		if pick in current:
+			current = current[pick][1]
+			break
+		elif pick == "exit":
+			raise SystemExit
+		else:
+			print ("This is not the time to stumble...try again.")
+	raise SystemExit
+
+def stat_check(stat,value):
+	if player.attributes[stat] >= value:
+		return True
+	else:
+		return False
+"""
+
+class Encounter:
+	def __init__(self,instance):
+		self.action(instance)
+	def action(self,instance):
+		current = instance["Start"]
+		#while current != "End":
+			
 
 def figmentEncounter():
 	print("""\nAs you take the book from the desk,\

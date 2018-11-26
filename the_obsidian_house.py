@@ -2,6 +2,7 @@ import re
 import regex
 from bitarray import bitarray
 from class_the_obsidian_house import *
+from encounters_the_obsidian_house import *
 
 cmdExit = re.compile(("^(Quit|Exit){1}$"),re.I)
 cmdInv = re.compile("^(Inventory){1}$",re.I)
@@ -234,6 +235,7 @@ def eventTracker():
 	if player.health <= 0:
 		game_over()
 	if "old book" in player.inv and gameState.events["figment"] == True:
+		encounter(figment)
 		check = figmentEncounter()
 		if check == "Ran":
 			player.location = frontTavern

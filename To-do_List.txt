@@ -12,6 +12,8 @@
 	
 	-- Add increase parsing functionality for "open" command
 	
+	-- Add function to print out health/mental-health status
+	
 ####################################################
 
 --Completed--
