@@ -235,10 +235,11 @@ def eventTracker():
 	if player.health <= 0:
 		game_over()
 	if "old book" in player.inv and gameState.events["figment"] == True:
-		encounter(figment)
-		check = figmentEncounter()
-		if check == "Ran":
-			player.location = frontTavern
+		#encounter(figment)
+		#check = figmentEncounter()
+		#if check == "Ran":
+			#player.location = frontTavern
+		Figment = Encounter(figment,lookupTable)
 	if player.location == shack and shack.cursed == True:
 		print("""There is a cold, disappointed sigh as you enter the shack.\
 		\nYour head is held still as a claw takes a chunk out of your throat.

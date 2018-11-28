@@ -34,8 +34,10 @@ figment = {
 			"Return" : {
 				"Event" : ["figment", False],
 				"Shack cursed" : True,
+				"Relocate" : "front tavern",
 				"return" : "Fled"
-			}
+			},
+			"Exit" : "End"
 		},
 		"Failed" : {
 			"Prompt" : "\nA claw, electric and sharp, slashes your back causing you to fall.\n",
@@ -70,10 +72,35 @@ figment = {
 	"Combat" : {
 		"Prompt" : "\nHow to proceed?\n",
 		"Check" : [["inventory", "dagger"],["inventory", "chunk of metal"]],
-		"Choice" : {
-			"1" : ["Unarmed attack", "Punch"],
-			"2" : ["Dagger attack", "Dagger"],
-			"3" : ["Concentrate on chunk of metal", "Implement"]
+		"Passed" : {
+			"Choice" : {
+				"1" : ["Unarmed attack", "Punch"],
+				"2" : ["Dagger attack", "Dagger"],
+				"3" : ["Concentrate on chunk of metal", "Implement"]
+			}
+		},
+		"Failed" : {
+			"Check" : ["inventory", "dagger"],
+			"Passed" : {
+				"Choice" : {
+					"1" : ["Unarmed attack", "Punch"],
+					"2" : ["Dagger attack", "Dagger"]
+				}
+			},
+			"Failed" : {
+				"Check" : ["inventory", "chunk of metal"],
+				"Passed" : {
+					"Choice" : {
+						"1" : ["Unarmed attack", "Punch"],
+						"2" : ["Concentrate on chunk of metal", "Implement"]
+					}
+				},
+				"Failed" : {
+					"Choice" : {
+							"1" : ["Unarmed attack", "Punch"]
+					}
+				}
+			}
 		}
 	},
 	"Punch" : {
@@ -159,9 +186,9 @@ figment = {
 		""",
 		"Status" : ["Player mental", -10],
 		"Return" : {
-			"Event" : ["figment", False],
-			"Exit" : "End"
-		}
+			"Event" : ["figment", False]
+		},
+		"Exit" : "End"
 	},
 	"Diplomacy" : {
 		"Prompt" : """\nYou stop and face the figment.\

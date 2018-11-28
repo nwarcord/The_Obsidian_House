@@ -502,12 +502,87 @@ def stat_check(stat,value):
 """
 
 class Encounter:
-	def __init__(self,instance):
+
+	def __init__(self,instance,lookup):
+		self.lookup = lookup
 		self.action(instance)
 	def action(self,instance):
 		current = instance["Start"]
-		#while current != "End":
-			
+		while current != "Exit":
+			for item in current: #Put a parsing function call here; current = parse(current) or something
+				if item == "Prompt":
+					print (current[item])
+				elif item == "Choice":
+					current = self.choice(current[item])
+					#current = instance[current]
+				elif item == "Check":
+					checker = self.check(current[item])
+					current = current[checker]
+					break
+				elif item == "Return":
+					self.returned(current[item])
+				elif item == "Status":
+					self.status(current[item])
+				elif item == "Jump":
+					current = current[item]
+					#current = instance[current]
+				else:
+					current = instance[current]
+					break
+
+	##Returned values function
+	def returned(self,current):
+		for item in current:
+			if item == "Player remove":
+				player.inv.remove(current[item])
+			elif item == "Event":
+				gameState.events[current[item][0]] = current[item][1]
+			elif item == "return":
+				pass
+			elif item == "Relocate":
+				newLocation = current[item]
+				player.location = self.lookup[newLocation]
+
+	##Choice function
+	def choice(self,current):
+		for item in current:
+			print ("{}. {}".format(item,current[item][0]))
+		while True:
+			pick = input(">>> ",)
+			if pick in current:
+				return current[pick][1]
+			else:
+				print("This is not the time to stumble...try again.")
+
+	##Check function
+	def check(self, current):
+		checker = True
+		for item in current:
+			subject = item[0]
+			value = item[1]
+			if subject in player.attributes:
+				checker = player.attributes[subject] >= value
+			elif subject == "inventory":
+				checker = value in player.inv
+			if checker == False:
+				return "Failed"
+		return "Passed"
+		#Needs to handle if there is a check with no pass/fail
+		#Or rephrase the dictionary to still have pass/fail
+		#^^^^ Checked with the keyword inventory
+
+	##Status function
+	def status(self, current):
+		for item in current:
+			value = current[item][1]
+			if item == "Player health":
+				player.health += value
+			elif item == "Player mental":
+				player.mental_health += value
+			elif item in player.condition:
+				player.condition[item] = value
+	def jump(self):
+		pass
 
 def figmentEncounter():
 	print("""\nAs you take the book from the desk,\
