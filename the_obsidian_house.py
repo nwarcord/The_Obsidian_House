@@ -241,7 +241,8 @@ def eventTracker():
 		#check = figmentEncounter()
 		#if check == "Ran":
 			#player.location = frontTavern
-		Encounter(figment,lookupTable,player)
+		#Encounter(figment,lookupTable,player)
+		fig = Figment(player,lookupTable)
 	if player.location == shack and gameState.events["shack cursed"] == True:
 		print("""There is a cold, disappointed sigh as you enter the shack.\
 		\nYour head is held still as a claw takes a chunk out of your throat.

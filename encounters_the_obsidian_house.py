@@ -50,8 +50,8 @@ figment = {
 		}
 	},
 	"Crawl no book" : {
-		"Prompt" : "\nThere is a screeching cry. WHen your eyes open, the figment and book are gone.\n",
-		"Status" : {"Player health" : -5},
+		"Prompt" : "\nThere is a screeching cry. When your eyes open, the figment and book are gone.\n",
+		"Status" : {"Player mental" : -5},
 		"Return" : {
 			"Player remove" : "old book",
 			"Event" : ["figment", False]
@@ -76,30 +76,22 @@ figment = {
 			"Choice" : {
 				"1" : ["Unarmed attack", "Punch"],
 				"2" : ["Dagger attack", "Dagger"],
-				"3" : ["Concentrate on chunk of metal", "Implement"]
+				"3" : ["Concentrate on chunk of metal", "Metal"]
 			}
 		},
 		"Failed" : {
-			"Check" : ["inventory", "dagger"],
-			"Passed" : {
-				"Choice" : {
-					"1" : ["Unarmed attack", "Punch"],
-					"2" : ["Dagger attack", "Dagger"]
-				}
+			"Check dagger" : ["inventory", "dagger"],
+			"Choice dagger" : {
+				"1" : ["Unarmed attack", "Punch"],
+				"2" : ["Dagger attack", "Dagger"]
 			},
-			"Failed" : {
-				"Check" : ["inventory", "chunk of metal"],
-				"Passed" : {
-					"Choice" : {
-						"1" : ["Unarmed attack", "Punch"],
-						"2" : ["Concentrate on chunk of metal", "Implement"]
-					}
-				},
-				"Failed" : {
-					"Choice" : {
-							"1" : ["Unarmed attack", "Punch"]
-					}
-				}
+			"Check metal" : ["inventory", "chunk of metal"],
+			"Choice metal" : {
+				"1" : ["Unarmed attack", "Punch"],
+				"2" : ["Concentrate on chunk of metal", "Metal"]
+			},
+			"Choice" : {
+				"1" : ["Unarmed attack", "Punch"]
 			}
 		}
 	},
@@ -134,7 +126,7 @@ figment = {
 			}
 		}
 	},
-	"Implement" : {
+	"Metal" : {
 		"Prompt" : """\nA subdued memory is pulled from your mind.\
 		\nThe chunk of metal seems to absorb your thoughts before\
 		\na burst of energy erupts around the figment.
@@ -196,7 +188,7 @@ figment = {
 		""",
 		"Check" : [["charisma", 5], ["focus", 7]],
 		"Passed" : {
-			"Prompt" : """\nBefore words have left your lips,\
+			"Prompt" : """Before words have left your lips,\
 			\na claw rests on your shoulder. The figment gazes into\
 			\nyour eyes and a voice ripples through your thoughts.\
 			\n\n"This world is not guaranteed. Knowledge can be erased,\
@@ -211,7 +203,7 @@ figment = {
 			"Exit" : "End"
 		},
 		"Failed" : {
-			"Prompt" : """\nThe figment leans closer as your mouth\
+			"Prompt" : """The figment leans closer as your mouth\
 			\nfails to form any sound.\
 			\n\n"Fools supply themselves to the fallen Dark.\
 			\nThe Deceiver spins thread and the Sculptor hungers.\

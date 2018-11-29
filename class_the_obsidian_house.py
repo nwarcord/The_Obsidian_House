@@ -1,5 +1,5 @@
 from bitarray import bitarray
-import encounters_the_obsidian_house
+from encounters_the_obsidian_house import *
 
 ####################################################
 ##				  --Player--					  ##
@@ -825,12 +825,12 @@ class Figment(Encounter):
 		print (openingPrompt)
 		pick = self.choice(current["Choice"])
 		options = {
-			"Flee" : self.flee(),
-			"Give book calm" : self.give_book_calm(),
-			"Combat" : self.combat(),
-			"Diplomacy" : self.diplomacy()
+			"Flee" : self.flee,
+			"Give book calm" : self.give_book_calm,
+			"Combat" : self.combat,
+			"Diplomacy" : self.diplomacy
 		}
-		return options[pick]
+		return options[pick]()
 	def flee(self):
 		current = figment["Flee"]
 		stats = self.user.attributes
@@ -856,14 +856,116 @@ class Figment(Encounter):
 		gameState.events["figment"] = False
 		return
 	def combat(self):
-		pass
+		pick = ""
+		current = figment["Combat"]
+		print(current["Prompt"])
+		if self.weapon_check(["obsidian dagger", "chunk of metal"]):
+			current = current["Passed"]
+			pick = self.choice(current["Choice"])
+		else:
+			current = current["Failed"]
+			if self.weapon_check("obsidian dagger"):
+				pick = self.choice(current["Choice dagger"])
+			elif self.weapon_check("chunk of metal"):
+				pick = self.choice(current["Choice metal"])
+			else:
+				pick = self.choice(current["Choice"])
+		options = {
+			"Punch" : self.punch,
+			"Dagger" : self.dagger,
+			"Metal" : self.metal
+		}
+		return options[pick]()
 	def diplomacy(self):
-		pass
+		current = figment["Diplomacy"]
+		print(current["Prompt"])
+		stats = self.user.attributes
+		if stats["charisma"] > 4 and stats["focus"] > 6:
+			current = current["Passed"]
+			print(current["Prompt"])
+			gameState.events["figment"] = False
+			return
+		current = current["Failed"]
+		print(current["Prompt"])
+		self.user.removeItem("old book")
+		gameState.events["figment"] = False
+		return
 	def crawl(self, book):
-		pass
-
-
-
+		if book is False:
+			current = figment["Crawl no book"]
+			print(current["Prompt"])
+			self.user.mental_health -= 5
+		else:
+			current = figment["Crawl book"]
+			print(current["Prompt"])
+			self.user.health -= 25
+			self.user.attributes["leg_crippled"] = True
+		self.user.removeItem("old book")
+		gameState.events["figment"] = False
+		return
+	def punch(self):
+		current = figment["Punch"]
+		print(current["Prompt"])
+		self.user.health -= 10
+		self.user.mental_health -= 10
+		pick = self.choice(current["Choice"])
+		options = {
+			"Flee" : self.flee,
+			"Last punch" : self.last_punch,
+			"Give book angry" : self.give_book_angry
+		}
+		return options[pick]()
+	def last_punch(self):
+		current = figment["Last punch"]
+		print(current["Prompt"])
+		self.user.mental_health -= 10
+		self.user.removeItem("old book")
+		gameState.events["figment"] = False
+		return
+	def dagger(self):
+		current = figment["Dagger"]
+		print(current["Prompt"])
+		stats = self.user.attributes
+		if stats["dexterity"] > 7 and stats["focus"] > 3:
+			return self.combat_success()
+		current = current["Failed"]
+		print(current["Prompt"])
+		self.user.mental_health -= 10
+		self.user.removeItem("obsidian dagger")
+		pick = self.choice(current["Choice"])
+		options = {
+			"Flee" : self.flee,
+			"Last punch" : self.last_punch,
+			"Give book angry" : self.give_book_angry
+		}
+		return options[pick]()
+	def metal(self):
+		current = figment["Metal"]
+		print(current["Prompt"])
+		if self.user.attributes["focus"] > 4:
+			return self.combat_success()
+		current = current["Failed"]
+		print(current["Prompt"])
+		self.user.mental_health -= 10
+		pick = self.choice(current["Choice"])
+		options = {
+			"Flee" : self.flee,
+			"Last punch" : self.last_punch,
+			"Give book angry" : self.give_book_angry
+		}
+		return options[pick]()
+	def combat_success(self):
+		current = figment["Combat success"]
+		print(current["Prompt"])
+		self.user.mental_health -= 10
+		gameState.events["figment"] = False
+		return
+	def give_book_angry(self):
+		current = figment["Give book angry"]
+		print(current["Prompt"])
+		self.user.removeItem("old book")
+		gameState.events["figment"] = False
+		return
 
 
 
