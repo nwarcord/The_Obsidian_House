@@ -3,6 +3,7 @@ import regex
 from bitarray import bitarray
 from class_the_obsidian_house import *
 from encounters_the_obsidian_house import *
+#import subprocess as sp
 
 cmdExit = re.compile(("^(Quit|Exit){1}$"),re.I)
 cmdInv = re.compile("^(Inventory){1}$",re.I)
@@ -12,6 +13,7 @@ cmdMove = re.compile(r"^(n|north|s|south|e|east|w|west|up|down){1}$",re.I)
 cmdOpen = re.compile(("^Open\s(\w+)$"),re.I)
 
 def user_input(cmmd):
+	#tmp = sp.call("clear",shell=True)
 	cmdExamine = regex.search(r"(?<=Examine\s)((\w+)(?:\s)*)+",cmmd,regex.I)
 	cmdTake = regex.search(r"(?<=Take\s)((\w+)(?:\s)*)+",cmmd,regex.I)
 	cmdDrop = regex.search(r"(?<=Drop\s)((\w+)(?:\s)*)+",cmmd,regex.I)
@@ -239,8 +241,8 @@ def eventTracker():
 		#check = figmentEncounter()
 		#if check == "Ran":
 			#player.location = frontTavern
-		Figment = Encounter(figment,lookupTable)
-	if player.location == shack and shack.cursed == True:
+		Encounter(figment,lookupTable,player)
+	if player.location == shack and gameState.events["shack cursed"] == True:
 		print("""There is a cold, disappointed sigh as you enter the shack.\
 		\nYour head is held still as a claw takes a chunk out of your throat.
 		""")

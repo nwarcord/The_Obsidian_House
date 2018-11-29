@@ -146,6 +146,22 @@ class player:
 					return
 		print ("Input error")
 		return
+	def playerStatus(self, updates, values):
+		for i in range (0, len(updates)):
+			if updates[i] == "health":
+				self.health = values[i]
+			elif updates[i] == "mental_health":
+				self.mental_health = values[i]
+			elif updates[i] in self.condition:
+				self.condition[updates[i]] = values[i]
+	def statCheck(self, stats, values):
+		for i in range(0, len(stats)):
+			if self.attributes[stats[i]] < values[i]:
+				return False
+		return True
+	def removeItem(self, thing):
+		if thing in self.inv:
+			self.inv.remove(thing)
 
 ####################################################
 ##				    --Items--					  ##
@@ -153,12 +169,14 @@ class player:
 
 itemTable = {
 	"strange token" : ["""\nA cold stone with a rune on it.
-		""", "player"],
+		""", "player",None, "token"],
 	"old book" : ["""\nLeather-bound and crisp.\
 		\nThe elements have had no effect on its condition.
-		""", "shack", "An old book stands out on top of the desk.\n"],
+		""", "shack", "An old book stands out on top of the desk.\n", "token"],
 	"chunk of metal": ["""\nDark and cold.
-		""", "shack", "Shining in the lamplight, a chunk of metal lies on the ground.\n"]
+		""", "shack", "Shining in the lamplight, a chunk of metal lies on the ground.\n", "weapon"],
+	"obsidian dagger" : ["""\nGlass, but too dense to see through. The handle looks wrapped with bandages.
+	""", "side alley", "Sticking out from his chest, you see the worn hilt of a dagger.", "weapon"]
 }
 
 ####################################################
@@ -193,7 +211,8 @@ class location:
 class gameState:
 
 	events = {
-		"figment" : True
+		"figment" : True,
+		"shack cursed" : False
 	}
 	bitfield = bitarray()
 	def updateState(self):
@@ -503,45 +522,51 @@ def stat_check(stat,value):
 
 class Encounter:
 
-	def __init__(self,instance,lookup):
+	def __init__(self,instance,lookup,user):
+		self.user = user
 		self.lookup = lookup
 		self.action(instance)
 	def action(self,instance):
-		current = instance["Start"]
-		while current != "Exit":
-			for item in current: #Put a parsing function call here; current = parse(current) or something
-				if item == "Prompt":
-					print (current[item])
-				elif item == "Choice":
-					current = self.choice(current[item])
-					#current = instance[current]
-				elif item == "Check":
-					checker = self.check(current[item])
-					current = current[checker]
-					break
-				elif item == "Return":
-					self.returned(current[item])
-				elif item == "Status":
-					self.status(current[item])
-				elif item == "Jump":
-					current = current[item]
-					#current = instance[current]
-				else:
-					current = instance[current]
-					break
+		current = "Start"
+		while current != "End":
+			current = instance[current]
+			current = self.parser(current)
+
+	def parser(self, current):
+		for item in current:
+			if item == "Prompt":
+				print (current[item])
+			elif item == "Choice":
+				current = self.choice(current[item])
+				break
+			elif item == "Check":
+				checker = self.check(current[item])
+				current = self.parser(current[checker])
+				break
+			elif item == "Return":
+				self.returned(current[item])
+			elif item == "Status":
+				self.status(current[item])
+			elif item == "Jump":
+				current = current[item]
+			elif item == "Exit":
+				current = "End"
+				break
+		return current
 
 	##Returned values function
 	def returned(self,current):
 		for item in current:
 			if item == "Player remove":
-				player.inv.remove(current[item])
-			elif item == "Event":
+				self.user.inv.remove(current[item])
+			#elif item == "Event":
+			elif "Event" in item:
 				gameState.events[current[item][0]] = current[item][1]
 			elif item == "return":
 				pass
 			elif item == "Relocate":
 				newLocation = current[item]
-				player.location = self.lookup[newLocation]
+				self.user.location = self.lookup[newLocation]
 
 	##Choice function
 	def choice(self,current):
@@ -574,7 +599,7 @@ class Encounter:
 	##Status function
 	def status(self, current):
 		for item in current:
-			value = current[item][1]
+			value = current[item]
 			if item == "Player health":
 				player.health += value
 			elif item == "Player mental":
@@ -720,12 +745,47 @@ def figmentEncounter():
 		else:
 			print("This is not the time to stumble...try again.")
 
+##Takes a list of items and returns true if
+##all of the items are in the players inventory. False otherwise.
+def weapon_check(stash, weapons):
+	for item in weapons:
+		if item not in stash:
+			return False
+	return True
+
+##Takes a dictionary with event names as keys and
+##the boolean to set them to as values
+def event_update(eventDict):
+	for item in eventDict:
+		gameState.events[item] = eventDict[item]
+	return
+
+##Takes a dictionary with numbers as keys and a list as values.
+##The list values are in choice - result order
+def choice(options):
+	for item in options:
+		print ("{}. {}".format(item,options[item][0]))
+	while True:
+		pick = input(">>> ",)
+		if pick in options:
+			return options[pick][1]
+		else:
+			print("This is not the time to stumble...try again.")
+
+#def 
+
+"""
+Figment encounter:
+
+	chart = figment
+	print chart[start]
+	temp = choice(start choice)
+	print chart[temp]
+	
 
 
 
-
-
-
+"""
 
 
 
