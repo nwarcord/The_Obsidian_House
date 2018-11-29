@@ -520,6 +520,7 @@ def stat_check(stat,value):
 		return False
 """
 
+"""
 class Encounter:
 
 	def __init__(self,instance,lookup,user):
@@ -608,7 +609,7 @@ class Encounter:
 				player.condition[item] = value
 	def jump(self):
 		pass
-
+"""
 def figmentEncounter():
 	print("""\nAs you take the book from the desk,\
 	\nan electric shock runs down your back.\
@@ -745,6 +746,7 @@ def figmentEncounter():
 		else:
 			print("This is not the time to stumble...try again.")
 
+"""
 ##Takes a list of items and returns true if
 ##all of the items are in the players inventory. False otherwise.
 def weapon_check(stash, weapons):
@@ -773,7 +775,7 @@ def choice(options):
 			print("This is not the time to stumble...try again.")
 
 #def 
-
+"""
 """
 Figment encounter:
 
@@ -787,9 +789,78 @@ Figment encounter:
 
 """
 
+class Encounter:
+	
+	def __init__(self,user,lookup):
+		self.user = user
+		self.lookup = lookup
+		self.starter()
+	def starter(self):
+		pass
+	def choice(self,options):
+		for item in options:
+			print ("{}. {}".format(item,options[item][0]))
+		while True:
+			pick = input(">>> ",)
+			if pick in options:
+				return options[pick][1]
+			else:
+				print("This is not the time to stumble...try again.")
+	def weapon_check(self,weapons):
+		stash = self.user.inv
+		for item in weapons:
+			if item not in stash:
+				return False
+		return True
+	def event_update(self,enc):
+		for item in enc:
+			gameState.events[item] = enc[item]
+		return
 
-
-
+class Figment(Encounter):
+	
+	def starter(self):
+		current = figment["Start"]
+		openingPrompt = current["Prompt"]
+		print (openingPrompt)
+		pick = self.choice(current["Choice"])
+		options = {
+			"Flee" : self.flee(),
+			"Give book calm" : self.give_book_calm(),
+			"Combat" : self.combat(),
+			"Diplomacy" : self.diplomacy()
+		}
+		return options[pick]
+	def flee(self):
+		current = figment["Flee"]
+		stats = self.user.attributes
+		if stats["dexterity"] > 6 and stats["focus"] > 6:
+			current = current["Passed"]
+			print (current["Prompt"])
+			gameState.events["figment"] = False
+			gameState.events["shack cursed"] = True
+			self.user.location = self.lookup["front tavern"]
+			return
+		else:
+			current = current["Failed"]
+			print (current["Prompt"])
+			self.user.health -= 15
+			pick = self.choice(current["Choice"])
+			if pick == "Crawl book":
+				return self.crawl(True)
+			return self.crawl(False)
+	def give_book_calm(self):
+		current = figment["Give book calm"]
+		print (current["Prompt"])
+		self.user.removeItem("old book")
+		gameState.events["figment"] = False
+		return
+	def combat(self):
+		pass
+	def diplomacy(self):
+		pass
+	def crawl(self, book):
+		pass
 
 
 
