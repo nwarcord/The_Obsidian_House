@@ -226,3 +226,14 @@ figment = {
 		"the love you take" : "the love you make"
 	}
 }
+
+drunkard = {
+	"Start" : {
+		"Prompt" : "",
+		"Choice" : {
+			"1" : [],
+			"2" : [],
+			"3" : []
+		}
+	}
+}

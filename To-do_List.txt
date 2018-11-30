@@ -3,6 +3,10 @@
 --To Do List--
 
 ####################################################
+
+	-- Write Side Alley description and functions
+	
+	-- Incorporate NPC functionality
 	
 	-- (partial) Location events (door opening, combat scenario, etc.)
 	
@@ -10,13 +14,15 @@
 	
 	-- Condense cmdExamine in user_input
 	
-	-- Add increase parsing functionality for "open" command
+	-- Add warning and chance to retreat if entering shack and it's cursed
 	
 ####################################################
 
 --Completed--
 
 ####################################################
+
+	-- [DONE] Add increase parsing functionality for "open" command
 
 	-- [DONE] Add function to print out health/mental-health status
 

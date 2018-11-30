@@ -30,6 +30,8 @@ def user_input(cmmd):
 			if i in trashWords:
 				temp = temp.replace(i,"")
 				temp = temp.strip()
+		if player.location.examine_object(temp):
+			return
 		if temp in player.location.interactions:
 			print(player.location.interactions[temp])
 			return

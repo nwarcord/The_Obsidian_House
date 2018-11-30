@@ -176,7 +176,8 @@ itemTable = {
 	"chunk of metal": ["""\nDark and cold.
 		""", "shack", "Shining in the lamplight, a chunk of metal lies on the ground.\n", "weapon"],
 	"obsidian dagger" : ["""\nGlass, but too dense to see through. The handle looks wrapped with bandages.
-	""", "side alley", "Sticking out from his chest, you see the worn hilt of a dagger.", "weapon"]
+	""", "side alley", "What appears to be a dagger is stuck between two crates.", "weapon"],
+	""
 }
 
 ####################################################
@@ -207,12 +208,15 @@ class location:
 		if thing in self.items:
 			self.description = self.description.replace(itemTable[thing][2],"")
 			self.items.remove(thing)
+	def examine_object(self, thing):
+		return False
 
 class gameState:
 
 	events = {
 		"figment" : True,
-		"shack cursed" : False
+		"shack cursed" : False,
+		"drunkard" : True
 	}
 	bitfield = bitarray()
 	def updateState(self):
@@ -227,6 +231,14 @@ class npc:
 		self.location = location
 		self.health = health
 		self.alive = alive
+
+class PaulLowden(npc):
+	def __init__(self,
+			deception = "",
+			location = "",
+			health = 60,
+			alive = True):
+		npc.__init__(self,description,location,health,alive)
 
 class frontTavern(location):
 
@@ -295,14 +307,38 @@ class sideAlley(location):
 ## They would have to beat someone first.)
 ####
 
+	daggerFound = False
+
 	def __init__(self,
-			description = """Side alley description.
-			""",
+			description = """The shadows are long with the sun low to the west.\
+			\nA neat stack of garbage leans against the wall of the building,\
+			\nframed by rows of fliers in exotic colors. The air is stale and\
+			\nevery subtle breeze carries an acidic taste. Around the east,\
+			\nthe edge of a blackened structure can be seen, while the front\
+			\nof the building is back to the west.\
+			\nStepping through the passage, you see a haggard man slumped\
+			\nagainst a fence.
+			""" + itemTable["obsidian dagger"][2],
 			items = [],
-			interactions = ["ground", "papers", "garbage"],
+			interactions = {
+				"ground" : "",
+				"fliers" : "",
+				"garbage" : "",
+				"man" : ""
+			},
 			connections = {"east" : "burned storehouse", "west" : "front tavern"},
 			name = "Side Alley"):
 		location.__init__(self, description, items, interactions, connections, name)
+		
+		def examine_object(self, thing):
+			if thing is "garbage" and self.daggerFound is False:
+				print ("""{}\
+				\nBetween two of such crates, you see the hilt of\
+				\nwhat appears to be a dagger.
+				""".format(self.interactions["garbage"]))
+				self.items.append("obsidian dagger")
+				return True
+			return False
 	
 class shack(location):
 
@@ -826,8 +862,7 @@ class Figment(Encounter):
 	
 	def starter(self):
 		current = figment["Start"]
-		openingPrompt = current["Prompt"]
-		print (openingPrompt)
+		print(current["Prompt"])
 		pick = self.choice(current["Choice"])
 		options = {
 			"Flee" : self.flee,
@@ -972,7 +1007,15 @@ class Figment(Encounter):
 		gameState.events["figment"] = False
 		return
 
+class Drunkard(Encounter):
 
+	def starter(self):
+		current = drunkard["Start"]
+		print(current["Prompt"])
+		pick = self.choice(current["Choice"])
+		options = {}
+		return options[pick]()
+	
 
 
 
