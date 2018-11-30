@@ -12,13 +12,13 @@
 	
 	-- Add increase parsing functionality for "open" command
 	
-	-- Add function to print out health/mental-health status
-	
 ####################################################
 
 --Completed--
 
 ####################################################
+
+	-- [DONE] Add function to print out health/mental-health status
 
 	-- [DONE] Add "items" variable in location class to differentiate between objects
 	that can be taken and those that can only be examined.

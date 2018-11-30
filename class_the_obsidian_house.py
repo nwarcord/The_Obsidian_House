@@ -18,10 +18,10 @@ class player:
 	health = 100
 	mental_health = 100
 	condition = {
-		"arm_broken" : False,
-		"leg_crippled" : False,
-		"eye_blinded" : False,
-		"tongue_removed" : False
+		"arm broken" : False,
+		"leg crippled" : False,
+		"eye blinded" : False,
+		"tongue removed" : False
 	}
 	
 	def __init__(self,location,item):
@@ -655,7 +655,7 @@ def figmentEncounter():
 					""")
 					player.inv.remove("old book")
 					gameState.events["figment"] = False
-					player.condition["leg_crippled"] = True
+					player.condition["leg crippled"] = True
 					player.health -= 25
 					return
 		elif choice == "2":
@@ -718,7 +718,7 @@ def figmentEncounter():
 							""")
 							player.inv.remove("old book")
 							gameState.events["figment"] = False
-							player.condition["leg_crippled"] = True
+							player.condition["leg crippled"] = True
 							player.health -= 25
 							return
 				elif choice == "2":
@@ -789,6 +789,10 @@ Figment encounter:
 
 """
 
+####################################################
+##				 --Encounters--					  ##
+####################################################
+
 class Encounter:
 	
 	def __init__(self,user,lookup):
@@ -800,6 +804,7 @@ class Encounter:
 	def choice(self,options):
 		for item in options:
 			print ("{}. {}".format(item,options[item][0]))
+		print("")
 		while True:
 			pick = input(">>> ",)
 			if pick in options:
@@ -864,9 +869,9 @@ class Figment(Encounter):
 			pick = self.choice(current["Choice"])
 		else:
 			current = current["Failed"]
-			if self.weapon_check("obsidian dagger"):
+			if self.weapon_check(["obsidian dagger"]):
 				pick = self.choice(current["Choice dagger"])
-			elif self.weapon_check("chunk of metal"):
+			elif self.weapon_check(["chunk of metal"]):
 				pick = self.choice(current["Choice metal"])
 			else:
 				pick = self.choice(current["Choice"])
@@ -899,7 +904,7 @@ class Figment(Encounter):
 			current = figment["Crawl book"]
 			print(current["Prompt"])
 			self.user.health -= 25
-			self.user.attributes["leg_crippled"] = True
+			self.user.condition["leg crippled"] = True
 		self.user.removeItem("old book")
 		gameState.events["figment"] = False
 		return

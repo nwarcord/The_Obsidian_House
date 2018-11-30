@@ -3,20 +3,22 @@ import regex
 from bitarray import bitarray
 from class_the_obsidian_house import *
 from encounters_the_obsidian_house import *
-#import subprocess as sp
+import subprocess as sp
 
 cmdExit = re.compile(("^(Quit|Exit){1}$"),re.I)
 cmdInv = re.compile("^(Inventory){1}$",re.I)
 cmdScan = re.compile(("^(Scan|Look){1}$"),re.I)
 cmdHelp = re.compile(("^(Help){1}$"),re.I)
+cmdHealth = re.compile(("^(Health){1}$"),re.I)
 cmdMove = re.compile(r"^(n|north|s|south|e|east|w|west|up|down){1}$",re.I)
-cmdOpen = re.compile(("^Open\s(\w+)$"),re.I)
+cmdClear = re.compile(("^(Clear){1}$"),re.I)
 
 def user_input(cmmd):
 	#tmp = sp.call("clear",shell=True)
 	cmdExamine = regex.search(r"(?<=Examine\s)((\w+)(?:\s)*)+",cmmd,regex.I)
 	cmdTake = regex.search(r"(?<=Take\s)((\w+)(?:\s)*)+",cmmd,regex.I)
 	cmdDrop = regex.search(r"(?<=Drop\s)((\w+)(?:\s)*)+",cmmd,regex.I)
+	cmdOpen = regex.search(r"(?<=Open\s)((\w+)(?:\s)*)+",cmmd,regex.I)
 	if cmdExit.search(cmmd):
 		gameExit()
 	elif cmdInv.search(cmmd):
@@ -65,9 +67,11 @@ def user_input(cmmd):
 					print(itemTable[i][0])
 					return
 		print("\nYou can't do that.\n")
-	elif cmdOpen.match(cmmd):
-		x = cmdOpen.match(cmmd)
-		player.location.openObject(x.group(1))
+	elif cmdOpen:
+		thing = cmdOpen.captures()
+		thing = "".join(thing).lower()
+		thing = "".join([word for word in thing.split() if word not in trashWords])
+		player.location.openObject(thing)
 	elif cmdTake:
 		thing = cmdTake.captures()
 		thing = "".join(thing).lower()
@@ -109,18 +113,51 @@ def user_input(cmmd):
 		player.printLocation(False)
 	elif cmdHelp.search(cmmd):
 		printCommands()
+	elif cmdHealth.search(cmmd):
+		print_health()
+	elif cmdClear.match(cmmd):
+		tmp = sp.call("clear",shell=True)
 	elif cmmd == "stop":
 		gameExit()
 	else:
 		print("\nI don't know that command.\n")
 	return
 
+def print_health():
+	print("""\nYour current physical condition is as follows:\
+	\n\n\tHealth: {} \\ 100\
+	\n\tMental health: {} \\ 100\
+	""".format(player.health, player.mental_health))
+	injuries = []
+	for i in player.condition:
+		if player.condition[i] == True:
+			injuries.append(i)
+	if len(injuries) == 0:
+		print ("\n\tNo major bodily injuries")
+	else:
+		print ("\nMajor bodily injuries:\n")
+		for i in injuries:
+			print ("\n\t{}".format(i))
+	print("")
+
 def printCommands():
-	print("""\n[Quit or Exit] = Close the game\
-	\n\nInventory = Print the contents of your inventory\
-	\n\n[Scan or Look] = Print the description of your surroundings.\
-	\n\nNote: Commands are not case-sensitive.
-	\n""")
+	print("""\nList of commands:\
+	\n\nMovement:\
+	\n\n\t'NORTH' or 'N'\
+	\n\t'SOUTH' or 'S'\
+	\n\t'WEST' or 'W'\
+	\n\t'EAST' or 'E'\
+	\n\n'INVENTORY': Prints the contents of your inventory\
+	\n\n'HEALTH': Prints your current health and physical condition status\
+	\n\n'SCAN' or 'LOOK': Describes your surroundings\
+	\n\n'EXAMINE' + [item/object]: Describes an item of note in your location or inventory\
+	\n\n'TAKE' + [item]: Adds qualifying items to your inventory\
+	\n\n'DROP' + [item]: Removes an item from your inventory and leaves it in current location\
+	\n\n'CLEAR': Clears the screen. Does not exit game.\
+	\n\n'EXIT' or 'QUIT': Exits the game and Python interpreter\
+	\n\n'HELP': Reprints these commands\
+	\n\n\tNote: Commands are not case-sensitive
+	""")
 
 def welcomeMsg():
 	print ("""\
