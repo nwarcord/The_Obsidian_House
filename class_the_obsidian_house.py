@@ -337,6 +337,7 @@ class sideAlley(location):
 				\nwhat appears to be a dagger.
 				""".format(self.interactions["garbage"]))
 				self.items.append("obsidian dagger")
+				self.daggerFound = True
 				return True
 			return False
 	
