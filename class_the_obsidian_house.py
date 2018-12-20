@@ -175,9 +175,10 @@ itemTable = {
 		""", "shack", "An old book stands out on top of the desk.\n", "token"],
 	"chunk of metal": ["""\nDark and cold.
 		""", "shack", "Shining in the lamplight, a chunk of metal lies on the ground.\n", "weapon"],
-	"obsidian dagger" : ["""\nGlass, but too dense to see through. The handle looks wrapped with bandages.
+	"obsidian dagger" : ["""\nGlass, but too dense to see through, and a handle that looks wrapped with bandages.\
+	\nThe blade ends jagged and flat, suggesting a break had shortened its length.
 	""", "side alley", "What appears to be a dagger is stuck between two crates.", "weapon"],
-	""
+	"temp" : None
 }
 
 ####################################################
@@ -292,7 +293,11 @@ class northTavern(location):
 			description = """Another description here.
 			""",
 			items = [],
-			interactions = ["ground", "window", "trap door"],
+			interactions = {
+				"ground" : "",
+				"window" : "",
+				"trap door" : ""
+			},
 			connections = {"west" : "shack", "east": "burned storehouse"},
 			name = "North Tavern"):
 		location.__init__(self, description, items, interactions, connections, name)
@@ -311,36 +316,45 @@ class sideAlley(location):
 
 	def __init__(self,
 			description = """The shadows are long with the sun low to the west.\
-			\nA neat stack of garbage leans against the wall of the building,\
+			\nA stack of garbage leans against the wall of the building,\
 			\nframed by rows of fliers in exotic colors. The air is stale and\
 			\nevery subtle breeze carries an acidic taste. Around the east,\
 			\nthe edge of a blackened structure can be seen, while the front\
 			\nof the building is back to the west.\
 			\nStepping through the passage, you see a haggard man slumped\
-			\nagainst a fence.
-			""" + itemTable["obsidian dagger"][2],
+			\nagainst a fence.\
+			\n""", #+ itemTable["obsidian dagger"][2],
 			items = [],
 			interactions = {
-				"ground" : "",
-				"fliers" : "",
-				"garbage" : "",
-				"man" : ""
+				"ground" : "Broken pavement peers through damp earth.",
+				"flier" : """\nThe image of a woman has been painted in a tasteful, watercolor style.\
+				\nShe is wearing a black lab coat and tie, arms crossed with gray lips cut into a smile.\
+				\n\n\t"Dr. Madeline Vereth's Clinic of the Clear Mind"\
+				\n\n"Specializing in brain dysfunctions and mental well-being"\
+				\n"If you or a loved one has experienced strange headaches, visions, sudden bleeding,\
+				\ntremors, seizures, or any other mental ailment left undiagnosed, we are here to help.\
+				\nOur staff is compassionate, well-trained, and ready to serve you with dignity and respect."\
+				\n\n\t"A subsidiary of TEAR Bio-Enhancements"
+				""",
+				"garbage" : "Bags of miscellaneous refuse and crates dissolving from neglect.",
+				"man" : "His chin is on his chest, the front of his button-down shirt is stained red."
 			},
 			connections = {"east" : "burned storehouse", "west" : "front tavern"},
 			name = "Side Alley"):
 		location.__init__(self, description, items, interactions, connections, name)
 		
-		def examine_object(self, thing):
-			if thing is "garbage" and self.daggerFound is False:
-				print ("""{}\
-				\nBetween two of such crates, you see the hilt of\
-				\nwhat appears to be a dagger.
-				""".format(self.interactions["garbage"]))
-				self.items.append("obsidian dagger")
-				self.daggerFound = True
-				return True
-			return False
-	
+	def examine_object(self, thing):
+		if thing == "garbage" and self.daggerFound == False:
+			print ("""{}\
+			\nBetween two of such crates, you see the hilt of\
+			\nwhat appears to be a dagger.
+			""".format(self.interactions["garbage"]))
+			self.items.append("obsidian dagger")
+			self.description += itemTable["obsidian dagger"][2]
+			self.daggerFound = True
+			return True
+		return False
+
 class shack(location):
 
 ####
