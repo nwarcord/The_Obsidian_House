@@ -39,7 +39,7 @@ def user_input(cmmd):
 			print(itemTable[temp][0])
 			return
 		for i in player.location.interactions:
-			if i in temp:
+			if i in temp or temp in i:
 				print(player.location.interactions[i])
 				return
 		for i in player.location.items:

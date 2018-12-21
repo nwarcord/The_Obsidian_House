@@ -164,7 +164,7 @@ class player:
 			self.inv.remove(thing)
 
 ####################################################
-##				    --Items--					  ##
+##				   --Items--					  ##
 ####################################################
 
 itemTable = {
@@ -235,9 +235,17 @@ class npc:
 
 class PaulLowden(npc):
 	def __init__(self,
-			deception = "",
+			description = "",
 			location = "",
 			health = 60,
+			alive = True):
+		npc.__init__(self,description,location,health,alive)
+		
+class ladyAstaire(npc):
+	def __init__(self,
+			description = "",
+			location = "tavern entryway",
+			health = 100,
 			alive = True):
 		npc.__init__(self,description,location,health,alive)
 
@@ -289,18 +297,53 @@ class frontTavern(location):
 			return
 
 class northTavern(location):
+
+	window_opened = False
+	cellar_door_examined = False
+
 	def __init__(self,
-			description = """Another description here.
+			description = """Soggy grass leaks from under a small wooden fence,\
+			\nframing the nearby field which has started gathering fog.\
+			\nYou hear soft noise coming from a window, directly above a cellar door.\
+			\nThe rear of the building is accessible to the east, while a shack is to the west.
 			""",
 			items = [],
 			interactions = {
-				"ground" : "",
-				"window" : "",
-				"trap door" : ""
+				"ground" : "Tufts of grass and long puddles.",
+				"window" : """\nThe window itself is ordinary.\
+				\nFoggy glass obscures all but colors of the interior.
+				""",
+				"cellar door" : """\nA single door is latched shut, held fast by a metal ring.\
+				\nThe wood is cracked and soggy. Unlike the concrete foundation of the building\
+				\nproper, the door is bordered with rough stone.
+				"""
 			},
 			connections = {"west" : "shack", "east": "burned storehouse"},
 			name = "North Tavern"):
 		location.__init__(self, description, items, interactions, connections, name)
+	
+	def openObject(self, thing):
+		if thing == 'window':
+			if self.window_opened == False:
+				print("""\nYou dig your fingers under the frame, but the window holds.\
+				\nIt is locked from the inside.
+				""")
+			else:
+				print("The window is already open.")
+		elif thing == 'cellar door':
+			print("You try to pull the door open, but it won't separate from the stone.")
+		else:
+			print ("\nThere is no {} here to open.\n".format(thing))
+		return
+	def examine_object(self, thing):
+		if self.cellar_door_examined == False and thing in "cellar door":
+			print(self.interactions["cellar door"])
+			self.cellar_door_examined = True
+			self.interactions["metal ring"] = """\nLooped through the latch with no discernible means of removal.\
+			\nIts gunmetal surface is polished but has a crack along the entire circumference. Appears soldered.
+			"""
+			return True
+		return False
 
 class sideAlley(location):
 
