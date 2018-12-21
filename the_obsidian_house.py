@@ -14,7 +14,6 @@ cmdMove = re.compile(r"^(n|north|s|south|e|east|w|west|up|down){1}$",re.I)
 cmdClear = re.compile(("^(Clear){1}$"),re.I)
 
 def user_input(cmmd):
-	#tmp = sp.call("clear",shell=True)
 	cmdExamine = regex.search(r"(?<=Examine\s)((\w+)(?:\s)*)+",cmmd,regex.I)
 	cmdTake = regex.search(r"(?<=Take\s)((\w+)(?:\s)*)+",cmmd,regex.I)
 	cmdDrop = regex.search(r"(?<=Drop\s)((\w+)(?:\s)*)+",cmmd,regex.I)
@@ -72,7 +71,7 @@ def user_input(cmmd):
 	elif cmdOpen:
 		thing = cmdOpen.captures()
 		thing = "".join(thing).lower()
-		thing = "".join([word for word in thing.split() if word not in trashWords])
+		thing = " ".join([word for word in thing.split() if word not in trashWords])
 		player.location.openObject(thing)
 	elif cmdTake:
 		thing = cmdTake.captures()

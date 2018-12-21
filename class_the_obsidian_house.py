@@ -42,9 +42,7 @@ class player:
 		self.location.description += itemTable[thing][2]
 		print("\nYou drop the {}.\n".format(thing))
 	def printAttributes(self):
-		#print("\nYour attributes are:\n")
 		for i in self.attributes:
-			#print("\n" + i + " = " + self.attributes[i])
 			print("{} = {}\n".format(i, self.attributes[i]))
 	def pickAttributes(self):
 		total = 20
@@ -78,18 +76,6 @@ class player:
 		perhaps, stave off the influence of others...
 		""")
 		for i in self.attributes:
-			"""if total == 0:
-				print ("\nAll points spent. Your attributes are:")
-				self.printAttributes()
-				while True:
-					finished = input("\nWould you like to continue? (Y/N)",)
-					if finished.lower() == "y":
-						print("Very well...")
-						return
-					elif finished.lower() == "n":
-						self.pickAttributes()
-					else:
-						print("I didn't catch that.")"""
 			while True:
 				pick = input("{} points remaining. How many for {}? ".format(total, i))
 				if pick.isdigit() == False:
