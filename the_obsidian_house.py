@@ -239,7 +239,8 @@ guest2Room = guest2Room()
 guest3Room = guest3Room()
 playerRoom = playerRoom()
 cellar = cellar()
-hoshostessRoom = hostessRoom()	
+hostessRoom = hostessRoom()
+dimHallway = dimHallway()
 player = player(frontTavern,"strange token")
 
 lookupTable = {
@@ -256,7 +257,8 @@ lookupTable = {
 	"guest room 3" : guest3Room,
 	"player room" : playerRoom,
 	"cellar" : cellar,
-	"hostess room" : hostessRoom
+	"hostess room" : hostessRoom,
+	"dim hallway" : dimHallway
 }
 
 def main():

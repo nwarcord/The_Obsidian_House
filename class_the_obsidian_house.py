@@ -203,7 +203,8 @@ class gameState:
 	events = {
 		"figment" : True,
 		"shack cursed" : False,
-		"drunkard" : True
+		"drunkard" : True,
+		"entered building" : False
 	}
 	bitfield = bitarray()
 	def updateState(self):
@@ -264,7 +265,7 @@ class frontTavern(location):
 				"south" : "side alley",
 				"east" : "\nThe door is shut.\n"},
 			name = "Front Tavern"):
-		location.__init__(self,description,items,interactions,connections,name)
+		location.__init__(self, description, items, interactions, connections, name)
 		
 	def openObject(self, thing):
 		if thing == "door" and self.connections["east"] != "tavern entryway":
@@ -421,18 +422,24 @@ class burnedStorehouse(location):
 				"north" : "north tavern",
 				"south" : "side alley"},
 			name = "Burned Storehouse"):
-		location.__init__(self, description,items,interactions,connections,name)
+		location.__init__(self, description, items, interactions, connections, name)
 	
 class tavernEntryway(location):
 	def __init__(self,
-			description = """Entryway description here.
+			description = """Stepping through the doorway, the soft sound of the river and wind ceases,\
+			\nleaving a warm melody of talk and laughter.\
+			\nA simple violin chorale whispers from within the walls,\
+			\nthe lamplight from sconces dancing to its song.\
+			\nBlack-stained wood covers every surface and provides a surprising coziness to the interior.\
+			\nA wide doorway is to the east, a dim hallway and closet are to the north.\
+			\nOn your right is a clerk's desk and a woman leaning over it, writing as you walk in.
 			""",
 			items = [],
 			interactions = ["hostess", "narrow door", "double doors", "front desk", "mail sorter"],
-			connections = {"north" : "dimHallway", "east" : "The doors are shut.", "west" : "front tavern"},
+			connections = {"north" : "dim hallway", "east" : "The doors are shut.", "west" : "front tavern"},
 			name = "Tavern Entryway"):
-		location.__init__(self,description, items, interactions, connections, name)
-	def closetOpen(self):
+		location.__init__(self, description, items, interactions, connections, name)
+	def openObject(self):
 		pass
 	def mailEntry(self):
 		pass
@@ -507,9 +514,13 @@ class hostessRoom(location):
 			""",
 			items = [],
 			interactions = ["stuff"],
-			connections = {"east" : "tavern entryway"},
-			name = "so-and-so's Room"):
+			connections = {"north" : "tavern entryway"},
+			name = "Lady Astaire's Room"):
 		location.__init__(self, description, items, interactions, connections, name)
+
+class dimHallway(location):
+	def __init__(self):
+		pass
 
 ####################################################
 ##				  --Functions--					  ##
